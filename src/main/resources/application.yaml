@@ -2,9 +2,7 @@ server:
   port: 8080
   error:
     include-stacktrace: never
-  tomcat:
-    relaxed-query-chars: [ '[',']' ]
-    relaxed-path-chars: [ '[',']' ]
+
 spring:
   jpa:
     hibernate:

@@ -1,10 +1,12 @@
 package dev.keqing.urbansensor.config;
 
 
+import dev.keqing.urbansensor.filter.AuthorizationFilter;
 import dev.keqing.urbansensor.filter.JwtRequestFilter;
 import dev.keqing.urbansensor.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,9 +24,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UsersService usersService;
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
-
     private static final String[] AUTH_WHITELIST = {
             // -- Swagger UI v3 (OpenAPI)
             "/swagger-ui.html",
@@ -38,28 +37,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     };
 
+    private final String[] POST_WHITELIST = {
+            "/authenticate/login",
+            "/authenticate/register",
+    };
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-        http.cors().and().csrf().disable().authorizeRequests();
-
-        http.csrf().disable().authorizeRequests()
-                .antMatchers(AUTH_WHITELIST)
-                .permitAll()
+        http.cors().and().csrf().disable().authorizeRequests()
+                .antMatchers(AUTH_WHITELIST).permitAll()
+                .antMatchers(HttpMethod.POST, POST_WHITELIST).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilter(new AuthorizationFilter(authenticationManager()))
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
     }
 
-    @Override
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+//    @Override
+//    @Bean
+//    public AuthenticationManager authenticationManagerBean() throws Exception {
+//        return super.authenticationManagerBean();
+//    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

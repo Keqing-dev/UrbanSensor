@@ -10,8 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Optional;
-
 
 @Service
 public class UsersService implements UserDetailsService {
@@ -20,16 +18,11 @@ public class UsersService implements UserDetailsService {
     private UsersRepository usersRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        try {
-            Optional<Users> userAccountOptional = usersRepository.findById(username);
-            if (userAccountOptional.isEmpty()) {
-                throw new UsernameNotFoundException("Usuario no encontrado");
-            }
-            Users userAccount = userAccountOptional.get();
-            return new User("mati2", "nose", new ArrayList<>());
-        } catch (Exception e) {
-            throw new UsernameNotFoundException("Nombre de usuario o contraseña incorrecta");
-        }
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Users user =
+                usersRepository.findFirstByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Datos " +
+                        "Inválidos, Intenta Nuevamente"));
+
+        return new User(user.getId(), user.getPassword(), new ArrayList<>());
     }
 }
