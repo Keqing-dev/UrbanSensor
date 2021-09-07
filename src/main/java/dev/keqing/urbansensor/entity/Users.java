@@ -20,7 +20,6 @@ public class Users {
     @Column(nullable = false, unique = true)
     private String id;
 
-
     @JsonDeserialize(converter = ToLowerCaseConverter.class)
     @Column(nullable = false, unique = true)
     private String email;
@@ -47,20 +46,29 @@ public class Users {
     @OneToMany(mappedBy = "user")
     Set<UsersProject> usersProjects;
 
-    @OneToMany(mappedBy = "users", orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     Set<Report> reports;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "plan_id", nullable = false)
     private Plan plan;
 
+
+    /** --- TRANSIENTS --- **/
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Transient
     private String token;
 
+
     public String getId() {
         return id;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -79,6 +87,10 @@ public class Users {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getLastName() {
@@ -128,5 +140,4 @@ public class Users {
     public void setPlan(Plan plan) {
         this.plan = plan;
     }
-
 }

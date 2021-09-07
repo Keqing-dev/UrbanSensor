@@ -1,44 +1,38 @@
 package dev.keqing.urbansensor.entity;
 
-import org.hibernate.annotations.CreationTimestamp;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Table
 @Entity(name = "users_project")
 public class UsersProject {
 
     @EmbeddedId
-    UsersProjectId id;
+    UsersProjectKey id;
 
     @ManyToOne
-    @MapsId("usersId")
-    @JoinColumn(name = "users_id")
-    private Users user;
+    @MapsId("userId")
+    @JoinColumn(name = "user_id")
+    Users user;
 
     @ManyToOne
     @MapsId("projectId")
     @JoinColumn(name = "project_id")
-    private Project project;
+    Project project;
 
-    @CreationTimestamp
-    private LocalDateTime joinedAt;
-
-    public UsersProjectId getId() {
+    public UsersProjectKey getId() {
         return id;
     }
 
-    public void setId(UsersProjectId id) {
+    public void setId(UsersProjectKey id) {
         this.id = id;
     }
 
-    public Users getUser() {
+    public Users getUsers() {
         return user;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setUsers(Users users) {
+        this.user = users;
     }
 
     public Project getProject() {
@@ -48,5 +42,4 @@ public class UsersProject {
     public void setProject(Project project) {
         this.project = project;
     }
-
 }

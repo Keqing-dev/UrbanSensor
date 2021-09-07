@@ -22,5 +22,5 @@ spring:
 springdoc:
   swagger-ui:
     operations-sorter: method
-    path: /doc
+    path: /docs
 

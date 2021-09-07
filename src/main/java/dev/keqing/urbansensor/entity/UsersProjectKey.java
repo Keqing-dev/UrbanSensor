@@ -5,20 +5,20 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 @Embeddable
-public class UsersProjectId implements Serializable {
+public class UsersProjectKey implements Serializable {
 
-    @Column(name = "users_id")
-    private String usersId;
+    @Column(name = "user_id")
+    String userId;
 
     @Column(name = "project_id")
-    private String projectId;
+    String projectId;
 
-    public String getUsersId() {
-        return usersId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUsersId(String usersId) {
-        this.usersId = usersId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getProjectId() {

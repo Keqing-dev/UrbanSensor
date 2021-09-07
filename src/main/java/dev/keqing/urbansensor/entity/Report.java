@@ -42,12 +42,12 @@ public class Report {
     private String file;
 
     @ManyToOne
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "projectId")
     private Project project;
 
     @ManyToOne
     @JoinColumn(name = "users_id")
-    private Users users;
+    private Users user;
 
     public String getId() {
         return id;
@@ -109,19 +109,5 @@ public class Report {
         this.file = file;
     }
 
-    public Project getProject() {
-        return project;
-    }
 
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
-    }
 }
