@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    username: urbansensor
+    password: pendiente
+    url: jdbc:postgresql://147.182.137.64:5432/UrbanSensor
+    hikari:
+      max-lifetime: 40000
+  sql:
+    init:
+      mode:
+      continue-on-error: true
+
+domain:
+  name: https://urban.keqing.dev/
