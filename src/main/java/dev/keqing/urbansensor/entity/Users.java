@@ -1,9 +1,9 @@
 package dev.keqing.urbansensor.entity;
 
-
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Table
 @Entity(name = "users")
@@ -15,17 +15,21 @@ public class Users {
     @Column(nullable = false, unique = true)
     private String id;
 
-    private String name;
+    @OneToMany(mappedBy = "user")
+    Set<UsersProject> usersProjects;
 
-    public String getId() {
-        return id;
+    @OneToMany(mappedBy = "users", orphanRemoval = true)
+    Set<Report> reports;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "plan_id", nullable = false)
+    private Plan plan;
+
+    public Plan getPlan() {
+        return plan;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setPlan(Plan plan) {
+        this.plan = plan;
     }
 }

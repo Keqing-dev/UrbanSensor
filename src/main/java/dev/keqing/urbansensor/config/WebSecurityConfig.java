@@ -33,7 +33,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //            "/authenticate/**",
             "/user/avatar/**",
             "/docs/**",
-//            "/**",//solo en desarrollo
+            "/doc/**",
+            "/**",//solo en desarrollo
 
 
     };

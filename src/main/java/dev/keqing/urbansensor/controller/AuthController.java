@@ -20,7 +20,6 @@ public class AuthController {
     @GetMapping(value = "/test")
     @Operation(security = @SecurityRequirement(name = "bearer-key"))
     public ResponseEntity<?> getTest() {
-
         return ResponseEntity.ok("OK");
     }
 
