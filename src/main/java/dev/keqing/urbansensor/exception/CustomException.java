@@ -20,11 +20,6 @@ public class CustomException extends Exception {
         this.code = code;
     }
 
-    public CustomException(HttpStatus code) {
-        super(code.getReasonPhrase());
-        this.code =  code;
-    }
-
     public HttpStatus getCode() {
         return code;
     }
