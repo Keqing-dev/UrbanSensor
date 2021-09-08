@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import dev.keqing.urbansensor.utils.ToLowerCaseConverter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -44,6 +45,7 @@ public class Users {
     private String avatar;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @Transient
     private String token;
 
