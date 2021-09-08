@@ -26,10 +26,33 @@ public class Project {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user")
-    Set<UsersProject> usersProjects;
+    Set<UserProject> userProjects;
 
     @OneToMany(mappedBy = "project")
     Set<Report> reports;
 
+
+    /** --- TRANSIENTS --- **/
+
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
 }

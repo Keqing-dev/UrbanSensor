@@ -1,9 +1,8 @@
 package dev.keqing.urbansensor.service;
 
-import dev.keqing.urbansensor.dao.UsersRepository;
-import dev.keqing.urbansensor.entity.Users;
+import dev.keqing.urbansensor.dao.UserRepository;
+import dev.keqing.urbansensor.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,14 +14,14 @@ import java.util.ArrayList;
 public class UsersService implements UserDetailsService {
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Users user =
-                usersRepository.findFirstByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Datos " +
+        User user =
+                userRepository.findFirstByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Datos " +
                         "Inválidos, Intenta Nuevamente"));
 
-        return new User(user.getId(), user.getPassword(), new ArrayList<>());
+        return new org.springframework.security.core.userdetails.User(user.getId(), user.getPassword(), new ArrayList<>());
     }
 }

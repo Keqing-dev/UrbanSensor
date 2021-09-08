@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Table
 @Entity(name = "users")
-public class Users {
+public class User {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -45,7 +45,7 @@ public class Users {
     private String avatar;
 
     @OneToMany(mappedBy = "user")
-    Set<UsersProject> usersProjects;
+    Set<UserProject> userProjects;
 
     @OneToMany(mappedBy = "user")
     Set<Report> reports;

@@ -5,7 +5,7 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 @Embeddable
-public class UsersProjectKey implements Serializable {
+public class UserProjectKey implements Serializable {
 
     @Column(name = "user_id")
     String userId;
