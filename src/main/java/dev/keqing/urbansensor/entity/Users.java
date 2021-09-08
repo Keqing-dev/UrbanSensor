@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Table
 @Entity(name = "users")
@@ -30,7 +31,6 @@ public class Users {
 
     @Column(nullable = false)
     private String name;
-
     @Column(nullable = false)
     private String lastName;
 
@@ -44,13 +44,31 @@ public class Users {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String avatar;
 
+    @OneToMany(mappedBy = "user")
+    Set<UsersProject> usersProjects;
+
+    @OneToMany(mappedBy = "user")
+    Set<Report> reports;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "plan_id", nullable = false)
+    private Plan plan;
+
+
+    /** --- TRANSIENTS --- **/
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @Transient
     private String token;
 
+
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getEmail() {
@@ -115,5 +133,13 @@ public class Users {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Plan getPlan() {
+        return plan;
+    }
+
+    public void setPlan(Plan plan) {
+        this.plan = plan;
     }
 }

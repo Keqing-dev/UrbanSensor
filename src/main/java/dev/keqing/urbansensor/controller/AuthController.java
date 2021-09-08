@@ -7,15 +7,11 @@ import dev.keqing.urbansensor.entity.Users;
 import dev.keqing.urbansensor.exception.CustomException;
 import dev.keqing.urbansensor.response.MessageResponse;
 import dev.keqing.urbansensor.response.UserResponse;
-import dev.keqing.urbansensor.service.UsersService;
 import dev.keqing.urbansensor.utils.RSAKeys;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,7 +63,7 @@ public class AuthController {
 
         Optional<Users> userExists = usersRepository.findFirstByEmail(user.getEmail());
 
-        if(userExists.isPresent())
+        if (userExists.isPresent())
             throw new CustomException(HttpStatus.BAD_REQUEST, "Ya existe un usuario con este email");
 
         String hash = bCryptPasswordEncoder.encode(user.getPassword());
@@ -79,6 +75,7 @@ public class AuthController {
         newUser.setName(user.getName());
         newUser.setLastName(user.getLastName());
         newUser.setProfession(user.getProfession());
+        newUser.setPlan(user.getPlan());
 
         usersRepository.save(newUser);
 
