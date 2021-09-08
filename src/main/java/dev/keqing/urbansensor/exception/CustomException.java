@@ -5,6 +5,11 @@ import org.springframework.http.HttpStatus;
 public class CustomException extends Exception {
     private HttpStatus code;
 
+    public CustomException(HttpStatus code) {
+        super(code.getReasonPhrase());
+        this.code = code;
+    }
+
     public CustomException(HttpStatus code, String message) {
         super(message);
         this.code = code;

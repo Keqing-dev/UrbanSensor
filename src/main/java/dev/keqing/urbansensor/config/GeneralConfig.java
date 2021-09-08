@@ -1,7 +1,11 @@
 package dev.keqing.urbansensor.config;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public enum GeneralConfig {
     INSTANCE;
+
+    @Value("${domain.name}")
     private String url = "https://urban.keqing.dev/";
 
     private int itemPerPage = 10;
