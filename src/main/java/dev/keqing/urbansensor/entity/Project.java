@@ -5,9 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,10 +26,33 @@ public class Project {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user")
-    Set<UsersProject> usersProjects;
+    Set<UserProject> userProjects;
 
     @OneToMany(mappedBy = "project")
     Set<Report> reports;
 
+
+    /** --- TRANSIENTS --- **/
+
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
 }

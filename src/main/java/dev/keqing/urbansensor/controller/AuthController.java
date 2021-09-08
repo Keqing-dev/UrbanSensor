@@ -2,8 +2,8 @@ package dev.keqing.urbansensor.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import dev.keqing.urbansensor.dao.UsersRepository;
-import dev.keqing.urbansensor.entity.Users;
+import dev.keqing.urbansensor.dao.UserRepository;
+import dev.keqing.urbansensor.entity.User;
 import dev.keqing.urbansensor.exception.CustomException;
 import dev.keqing.urbansensor.response.MessageResponse;
 import dev.keqing.urbansensor.response.UserResponse;
@@ -27,12 +27,12 @@ import java.util.Optional;
 public class AuthController {
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping(value = "/login")
-    ResponseEntity<UserResponse> login(@RequestBody Users user) throws CustomException, IOException {
+    ResponseEntity<UserResponse> login(@RequestBody User user) throws CustomException, IOException {
         String email = user.getEmail();
         String password = user.getPassword();
 
@@ -40,8 +40,8 @@ public class AuthController {
             throw new CustomException(HttpStatus.BAD_REQUEST, "Datos Invalidos, Intenta Nuevamente");
         }
 
-        Users userExists =
-                usersRepository.findFirstByEmail(email).orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Datos Invalidos, Intenta Nuevamente"));
+        User userExists =
+                userRepository.findFirstByEmail(email).orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Datos Invalidos, Intenta Nuevamente"));
 
         String passwordEncoded = userExists.getPassword();
 
@@ -59,16 +59,16 @@ public class AuthController {
     }
 
     @PostMapping(value = "/register")
-    ResponseEntity<MessageResponse> createUser(@RequestBody Users user) throws CustomException {
+    ResponseEntity<MessageResponse> createUser(@RequestBody User user) throws CustomException {
 
-        Optional<Users> userExists = usersRepository.findFirstByEmail(user.getEmail());
+        Optional<User> userExists = userRepository.findFirstByEmail(user.getEmail());
 
         if (userExists.isPresent())
             throw new CustomException(HttpStatus.BAD_REQUEST, "Ya existe un usuario con este email");
 
         String hash = bCryptPasswordEncoder.encode(user.getPassword());
 
-        Users newUser = new Users();
+        User newUser = new User();
 
         newUser.setEmail(user.getEmail());
         newUser.setPassword(hash);
@@ -77,7 +77,7 @@ public class AuthController {
         newUser.setProfession(user.getProfession());
         newUser.setPlan(user.getPlan());
 
-        usersRepository.save(newUser);
+        userRepository.save(newUser);
 
         return ResponseEntity.ok(new MessageResponse(true, "Usuario Creado Exitosamente"));
     }

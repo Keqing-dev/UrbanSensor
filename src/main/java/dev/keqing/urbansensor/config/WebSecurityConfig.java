@@ -43,11 +43,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/authenticate/register",
     };
 
+    private final String[] GET_WHITELIST = {
+            "/project/latest",
+            "/project",
+
+    };
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 .antMatchers(HttpMethod.POST, POST_WHITELIST).permitAll()
+                .antMatchers(HttpMethod.GET, GET_WHITELIST).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

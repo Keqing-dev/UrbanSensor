@@ -36,7 +36,7 @@ public class OpenApiConfig {
                 .addServersItem(new Server().url("http://localhost:8080"))
                 .addServersItem(new Server().url(domain_url))
                 .components(new Components()
-                        .addSecuritySchemes("bearer-key", new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT"))
+                        .addSecuritySchemes("bearer", new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT"))
                 );
 
     }

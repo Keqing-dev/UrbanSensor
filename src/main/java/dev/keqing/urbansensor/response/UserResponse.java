@@ -1,20 +1,20 @@
 package dev.keqing.urbansensor.response;
 
-import dev.keqing.urbansensor.entity.Users;
+import dev.keqing.urbansensor.entity.User;
 
 public class UserResponse extends StatusResponse{
-    public Users data;
+    public User data;
 
-    public UserResponse(boolean success, Users data) {
+    public UserResponse(boolean success, User data) {
         super(success);
         this.data = data;
     }
 
-    public Users getData() {
+    public User getData() {
         return data;
     }
 
-    public void setData(Users data) {
+    public void setData(User data) {
         this.data = data;
     }
 }
