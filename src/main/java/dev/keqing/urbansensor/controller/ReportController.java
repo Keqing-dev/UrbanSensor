@@ -5,6 +5,7 @@ import dev.keqing.urbansensor.dao.ReportRepository;
 import dev.keqing.urbansensor.entity.Paging;
 import dev.keqing.urbansensor.entity.Report;
 import dev.keqing.urbansensor.exception.CustomException;
+import dev.keqing.urbansensor.projection.ReportSummary;
 import dev.keqing.urbansensor.response.ReportResponse;
 import dev.keqing.urbansensor.response.ReportsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
