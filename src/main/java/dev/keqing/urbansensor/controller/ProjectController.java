@@ -1,6 +1,8 @@
 package dev.keqing.urbansensor.controller;
 
 
+import com.google.gson.Gson;
+import com.opencsv.bean.StatefulBeanToCsv;
 import dev.keqing.urbansensor.config.GeneralConfig;
 import dev.keqing.urbansensor.dao.ProjectRepository;
 import dev.keqing.urbansensor.dao.UserProjectRepository;
@@ -25,7 +27,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @CrossOrigin(value = "*")
 @Tag(name = "Project")
@@ -137,6 +144,15 @@ public class ProjectController {
     private User validateUser(HttpServletRequest request) throws CustomException {
         return userRepository.findById(request.getRemoteUser()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Usuario no encontrado."));
     }
+
+    @GetMapping(value ="/test")
+    public ResponseEntity<?> test2() throws IOException {
+
+
+        return ResponseEntity.ok("AAa");
+    }
+
+
 
 }
 
