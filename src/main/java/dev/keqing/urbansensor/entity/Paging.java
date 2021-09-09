@@ -2,6 +2,7 @@ package dev.keqing.urbansensor.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.keqing.urbansensor.config.GeneralConfig;
+import org.springframework.data.domain.Page;
 
 public class Paging {
 
@@ -18,6 +19,21 @@ public class Paging {
     }
 
     public Paging() {
+    }
+
+
+    public static Paging toPagination(Page reports, int page, String type) {
+        Paging paging = null;
+        if (reports.hasPrevious() || reports.hasNext())
+            paging = new Paging();
+
+        if (reports.hasNext() && paging != null)
+            paging.setNext(type + "?page=" + (page + 1));
+
+        if (reports.hasPrevious() && paging != null)
+            paging.setPrevious(type + "?page=" + (page - 1));
+
+        return paging;
     }
 
     public String getPrevious() {

@@ -7,6 +7,8 @@ import dev.keqing.urbansensor.entity.Report;
 import dev.keqing.urbansensor.exception.CustomException;
 import dev.keqing.urbansensor.response.ReportResponse;
 import dev.keqing.urbansensor.response.ReportsResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +30,7 @@ public class ReportController {
     private final int itemPerPage = GeneralConfig.INSTANCE.getItemPerPage();
 
     @GetMapping
+    @Operation(summary = "Lista de reportes",security = @SecurityRequirement(name = "bearer"))
     ResponseEntity<ReportsResponse> getAll(@RequestParam(name = "page") int page,
                                            @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
                                            @RequestParam(name = "sortBy", required = false, defaultValue = "timestampDESC") String sortBy) {
@@ -41,16 +44,7 @@ public class ReportController {
         Pageable pageable = PageRequest.of(page - 1, limit > 100 ? itemPerPage : limit, sort);
         Page<Report> reports = reportRepository.findAll(pageable);
 
-        Paging paging = null;
-
-        if (reports.hasPrevious() || reports.hasNext())
-            paging = new Paging();
-
-        if (reports.hasNext() && paging != null)
-            paging.setNext("post?page=" + (page + 1));
-
-        if (reports.hasPrevious() && paging != null)
-            paging.setPrevious("post?page=" + (page - 1));
+        Paging paging = Paging.toPagination(reports,page,"report");
 
         return ResponseEntity.ok(new ReportsResponse(true, reports.getContent(), paging));
     }

@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final String[] GET_WHITELIST = {
             "/project/latest",
-            "/project",
+            "/plan",
 
     };
 

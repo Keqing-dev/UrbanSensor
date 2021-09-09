@@ -16,7 +16,7 @@ public interface UserProjectRepository extends JpaRepository<UserProject, String
 
     Optional<UserProject> findByProject_Id(String id);
 
-    Page<UserProject> findAllByUser_Id(String id, Pageable pageable);
+    Page<UserProject> findAllByUser_IdOrderByProject_CreatedAtDesc(String id, Pageable pageable);
 
     Page<UserProject> findAllByProject_NameContainsIgnoreCaseAndUser(String name, User id, Pageable pageable);
 
