@@ -13,15 +13,15 @@ public class GeneralConfig {
     private String fileDir;
     private int itemPerPage = 10;
 
-    public int initPage(int page){
-        return page - 1 < 0 ? 0: page + 1;
+    public int initPage(int page) {
+        return page - 1;
     }
 
-    public int limitPage(int limit){
+    public int limitPage(int limit) {
         return limit > 100 ? itemPerPage : limit;
     }
 
-    public Pageable pageable(int page, int limit){
+    public Pageable pageable(int page, int limit) {
         return PageRequest.of(this.initPage(page), this.limitPage(limit));
     }
 

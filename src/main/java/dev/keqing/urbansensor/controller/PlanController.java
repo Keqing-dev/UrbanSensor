@@ -25,9 +25,6 @@ import java.util.Optional;
 public class PlanController {
 
     @Autowired
-    private GeneralConfig generalConfig;
-
-    @Autowired
     private PlanRepository planRepository;
 
     @Autowired
@@ -54,7 +51,7 @@ public class PlanController {
 
         List<Plan> planList = planRepository.findAll();
 
-        return ResponseEntity.ok(new CommonResponse(true, "Plan creado exitosamente."));
+        return ResponseEntity.ok(new CommonResponse(true, planList));
     }
 
     @DeleteMapping

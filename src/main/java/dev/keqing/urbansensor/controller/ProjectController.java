@@ -2,6 +2,7 @@ package dev.keqing.urbansensor.controller;
 
 import dev.keqing.urbansensor.config.GeneralConfig;
 import dev.keqing.urbansensor.dao.ProjectRepository;
+import dev.keqing.urbansensor.dao.ReportRepository;
 import dev.keqing.urbansensor.dao.UserProjectRepository;
 import dev.keqing.urbansensor.entity.*;
 import dev.keqing.urbansensor.exception.CustomException;
@@ -33,6 +34,8 @@ public class ProjectController {
 
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired
+    private ReportRepository reportRepository;
 
     @Autowired
     private UserProjectRepository userProjectRepository;
@@ -47,13 +50,14 @@ public class ProjectController {
     @Operation(summary = "Últimos proyectos", description = "Trae los últimos tres proyectos de un usuario, ordenados por la fecha de creación en forma descendente", security = @SecurityRequirement(name = "bearer"))
     public ResponseEntity<CommonResponse> getLatest(HttpServletRequest request) throws CustomException {
 
-        List<UserProject> projectList = userProjectRepository.findFirst3ByUser_IdOrderByProject_CreatedAtDesc(request.getRemoteUser());
+        Pageable pageable = generalConfig.pageable(1, 3);
+        Page<Project> projectList = projectRepository.findLast3ProjectByUser_IdAndCountTheirReports(request.getRemoteUser(),pageable);
 
         if (projectList.isEmpty()) {
             throw new CustomException(HttpStatus.NOT_FOUND);
         }
 
-        return ResponseEntity.ok(new CommonResponse(true, projectList));
+        return ResponseEntity.ok(new CommonResponse(true, projectList.getContent()));
     }
 
     @PostMapping()
@@ -105,8 +109,8 @@ public class ProjectController {
     @GetMapping(value = "/user")
     @Operation(summary = "Lista de proyectos", description = "Trae todos los proyectos de un usuario, ordenados por la fecha de creación en forma descendente")
     public ResponseEntity<CommonResponse> getAllProjectByUser(@RequestParam String userId,
-                                                                   @RequestParam int page,
-                                                                   @RequestParam(name = "limit", required = false, defaultValue = "10") int limit) throws CustomException {
+                                                              @RequestParam int page,
+                                                              @RequestParam(name = "limit", required = false, defaultValue = "10") int limit) throws CustomException {
         Pageable pageable = PageRequest.of(generalConfig.initPage(page), generalConfig.limitPage(limit));
 
         Page<UserProject> projectList = userProjectRepository.findAllByUser_IdOrderByProject_CreatedAtDesc(userId, pageable);
@@ -125,11 +129,11 @@ public class ProjectController {
             description = "Trae todos los proyectos de un usuario ingresado en el sistema, ordenados por la fecha de creación en forma descendente",
             security = @SecurityRequirement(name = "bearer"))
     public ResponseEntity<CommonResponse> getMyAllProject(HttpServletRequest request,
-                                                               @RequestParam int page,
-                                                               @RequestParam(name = "limit", required = false, defaultValue = "10") int limit) throws CustomException {
+                                                          @RequestParam int page,
+                                                          @RequestParam(name = "limit", required = false, defaultValue = "10") int limit) throws CustomException {
         Pageable pageable = generalConfig.pageable(page, limit);
         User user = validations.validateUser(request);
-        Page<UserProject> projectList = userProjectRepository.findAllByUser_IdOrderByProject_CreatedAtDesc(user.getId(), pageable);
+        Page<Project> projectList = projectRepository.findAllProjectByUser_IdAndCountTheirReports(user.getId(), pageable);
 
         if (projectList.isEmpty()) {
             throw new CustomException(HttpStatus.NOT_FOUND);
@@ -146,8 +150,8 @@ public class ProjectController {
 
         User user = validations.validateUser(request);
 
-        Pageable pageable = PageRequest.of(page, generalConfig.getItemPerPage());
-        Page<UserProject> userProjects = userProjectRepository.findAllByProject_NameContainsIgnoreCaseAndUser(search, user, pageable);
+        Pageable pageable = generalConfig.pageable(page, 10);
+        Page<Project> userProjects = projectRepository.searchAllProjectByUserAndCountTheirReports(user.getId(), search, pageable);
 
 
         Paging paginated = paging.toPagination(userProjects, page, "search");
