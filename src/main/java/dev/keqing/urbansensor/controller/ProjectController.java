@@ -3,15 +3,8 @@ package dev.keqing.urbansensor.controller;
 import dev.keqing.urbansensor.config.GeneralConfig;
 import dev.keqing.urbansensor.dao.ProjectRepository;
 import dev.keqing.urbansensor.dao.UserProjectRepository;
-import dev.keqing.urbansensor.entity.Paging;
-import dev.keqing.urbansensor.entity.Project;
-import dev.keqing.urbansensor.entity.User;
-import dev.keqing.urbansensor.entity.UserProject;
+import dev.keqing.urbansensor.entity.*;
 import dev.keqing.urbansensor.exception.CustomException;
-import dev.keqing.urbansensor.response.MessageResponse;
-import dev.keqing.urbansensor.response.ProjectResponse;
-import dev.keqing.urbansensor.response.StatusResponse;
-import dev.keqing.urbansensor.response.UserProjectResponse;
 import dev.keqing.urbansensor.utils.Validations;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -25,9 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @CrossOrigin(value = "*")
 @Tag(name = "Project")
@@ -49,7 +41,7 @@ public class ProjectController {
 
     @GetMapping(value = "/latest")
     @Operation(summary = "Últimos proyectos", description = "Trae los últimos tres proyectos de un usuario, ordenados por la fecha de creación en forma descendente", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<UserProjectResponse> getLatest(HttpServletRequest request) throws CustomException {
+    public ResponseEntity<CommonResponse> getLatest(HttpServletRequest request) throws CustomException {
 
         List<UserProject> projectList = userProjectRepository.findFirst3ByUser_IdOrderByProject_CreatedAtDesc(request.getRemoteUser());
 
@@ -57,12 +49,12 @@ public class ProjectController {
             throw new CustomException(HttpStatus.NOT_FOUND);
         }
 
-        return ResponseEntity.ok(new UserProjectResponse(true, projectList));
+        return ResponseEntity.ok(new CommonResponse(true, projectList));
     }
 
     @PostMapping()
     @Operation(summary = "Creación de proyecto", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<UserProjectResponse> createProject(@RequestBody Project project, HttpServletRequest request) throws CustomException {
+    public ResponseEntity<CommonResponse> createProject(@RequestBody Project project, HttpServletRequest request) throws CustomException {
 
         User user = validations.validateUser(request);
 
@@ -71,12 +63,12 @@ public class ProjectController {
         UserProject userProject = new UserProject(user, projectSaved);
         userProjectRepository.save(userProject);
 
-        return ResponseEntity.ok(new UserProjectResponse(true, userProject));
+        return ResponseEntity.ok(new CommonResponse(true, userProject));
     }
 
     @PatchMapping
     @Operation(summary = "Actualización de proyecto", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<ProjectResponse> updateProject(@RequestBody Project project, HttpServletRequest request) throws CustomException {
+    public ResponseEntity<CommonResponse> updateProject(@RequestBody Project project, HttpServletRequest request) throws CustomException {
 
         User user = validations.validateUser(request);
         UserProject userProject = userProjectRepository.findByProject_Id(project.getId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Proyecto no encontrado."));
@@ -87,12 +79,12 @@ public class ProjectController {
         project.setCreatedAt(userProject.getProject().getCreatedAt());
         Project projectSaved = projectRepository.save(project);
 
-        return ResponseEntity.ok(new ProjectResponse(true, projectSaved));
+        return ResponseEntity.ok(new CommonResponse(true, projectSaved));
     }
 
     @DeleteMapping
     @Operation(summary = "Eliminación de proyecto", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<StatusResponse> deleteProject(@RequestParam String projectId, HttpServletRequest request) throws CustomException {
+    public ResponseEntity<CommonResponse> deleteProject(@RequestParam String projectId, HttpServletRequest request) throws CustomException {
 
         User user = validations.validateUser(request);
         UserProject userProject = userProjectRepository.findByProject_Id(projectId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Proyecto no encontrado."));
@@ -103,12 +95,12 @@ public class ProjectController {
 
         projectRepository.deleteById(projectId);
 
-        return ResponseEntity.ok(new MessageResponse(true, "Proyecto Eliminado."));
+        return ResponseEntity.ok(new CommonResponse(true, "Proyecto Eliminado."));
     }
 
     @GetMapping(value = "/user")
     @Operation(summary = "Lista de proyectos", description = "Trae todos los proyectos de un usuario, ordenados por la fecha de creación en forma descendente")
-    public ResponseEntity<UserProjectResponse> getAllProjectByUser(@RequestParam String userId,
+    public ResponseEntity<CommonResponse> getAllProjectByUser(@RequestParam String userId,
                                                                    @RequestParam int page,
                                                                    @RequestParam(name = "limit", required = false, defaultValue = "10") int limit) throws CustomException {
         Pageable pageable = PageRequest.of(generalConfig.initPage(page), generalConfig.limitPage(limit));
@@ -121,14 +113,14 @@ public class ProjectController {
 
         Paging paging = Paging.toPagination(projectList, page, "user");
 
-        return ResponseEntity.ok(new UserProjectResponse(true, projectList.getContent(), paging));
+        return ResponseEntity.ok(new CommonResponse(true, Collections.singletonList(projectList.getContent()), paging));
     }
 
     @GetMapping
     @Operation(summary = "Mis proyectos",
             description = "Trae todos los proyectos de un usuario ingresado en el sistema, ordenados por la fecha de creación en forma descendente",
             security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<UserProjectResponse> getMyAllProject(HttpServletRequest request,
+    public ResponseEntity<CommonResponse> getMyAllProject(HttpServletRequest request,
                                                                @RequestParam int page,
                                                                @RequestParam(name = "limit", required = false, defaultValue = "10") int limit) throws CustomException {
         Pageable pageable = generalConfig.pageable(page, limit);
@@ -141,12 +133,12 @@ public class ProjectController {
 
         Paging paging = Paging.toPagination(projectList, page, "project");
 
-        return ResponseEntity.ok(new UserProjectResponse(true, projectList.getContent(), paging));
+        return ResponseEntity.ok(new CommonResponse(true, Collections.singletonList(projectList.getContent()), paging));
     }
 
     @GetMapping(value = "/search")
     @Operation(summary = "Buscar proyecto", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<UserProjectResponse> searchProjectByUser(@RequestParam String search, @RequestParam int page, HttpServletRequest request) throws CustomException {
+    public ResponseEntity<CommonResponse> searchProjectByUser(@RequestParam String search, @RequestParam int page, HttpServletRequest request) throws CustomException {
 
         User user = validations.validateUser(request);
 
@@ -155,7 +147,7 @@ public class ProjectController {
 
 
         Paging paging = Paging.toPagination(userProjects, page, "search");
-        return ResponseEntity.ok(new UserProjectResponse(true, userProjects.getContent(), paging));
+        return ResponseEntity.ok(new CommonResponse(true, Collections.singletonList(userProjects.getContent()), paging));
     }
 
 }

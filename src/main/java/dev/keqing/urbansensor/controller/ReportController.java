@@ -66,16 +66,7 @@ public class ReportController {
         Pageable pageable = PageRequest.of(page - 1, limit > 100 ? itemPerPage : limit, sort);
         Page<ReportSummary> reports = reportRepository.findAllByUser(user, pageable);
 
-        Paging paging = null;
-
-        if (reports.hasPrevious() || reports.hasNext())
-            paging = new Paging();
-
-        if (reports.hasNext() && paging != null)
-            paging.setNext("post?page=" + (page + 1));
-
-        if (reports.hasPrevious() && paging != null)
-            paging.setPrevious("post?page=" + (page - 1));
+        Paging paging = Paging.toPagination(reports, page, "report");
 
         return ResponseEntity.ok(new CommonResponse(true, Collections.singletonList(reports.getContent()), paging));
     }

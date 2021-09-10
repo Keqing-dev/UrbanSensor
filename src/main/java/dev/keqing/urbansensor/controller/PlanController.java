@@ -1,10 +1,10 @@
 package dev.keqing.urbansensor.controller;
 
+import dev.keqing.urbansensor.config.GeneralConfig;
 import dev.keqing.urbansensor.dao.PlanRepository;
 import dev.keqing.urbansensor.entity.Plan;
 import dev.keqing.urbansensor.exception.CustomException;
 import dev.keqing.urbansensor.entity.CommonResponse;
-import dev.keqing.urbansensor.response.MessageResponse;
 import dev.keqing.urbansensor.utils.Validations;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -35,7 +35,7 @@ public class PlanController {
 
     @PostMapping
     @Operation(summary = "Creación de plan", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<MessageResponse> createPlan(@RequestBody Plan plan, HttpServletRequest request) throws CustomException {
+    public ResponseEntity<CommonResponse> createPlan(@RequestBody Plan plan, HttpServletRequest request) throws CustomException {
 
         validations.validateUser(request);
 
@@ -45,21 +45,21 @@ public class PlanController {
 
         planRepository.save(plan);
 
-        return ResponseEntity.ok(new MessageResponse(true, "Plan creado exitosamente."));
+        return ResponseEntity.ok(new CommonResponse(true, "Plan creado exitosamente."));
     }
 
     @GetMapping
     @Operation(summary = "Lista de planes")
-    public ResponseEntity<MessageResponse> getAll() {
+    public ResponseEntity<CommonResponse> getAll() {
 
         List<Plan> planList = planRepository.findAll();
 
-        return ResponseEntity.ok(new MessageResponse(true, "Plan creado exitosamente."));
+        return ResponseEntity.ok(new CommonResponse(true, "Plan creado exitosamente."));
     }
 
     @DeleteMapping
     @Operation(summary = "Eliminar pan", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<MessageResponse> deletePlan(@RequestParam String planId) throws CustomException {
+    public ResponseEntity<CommonResponse> deletePlan(@RequestParam String planId) throws CustomException {
 
         Optional<Plan> plan = planRepository.findById(planId);
 
@@ -69,7 +69,7 @@ public class PlanController {
 
         planRepository.deleteById(planId);
 
-        return ResponseEntity.ok(new MessageResponse(true, "Plan eliminado exitosamente."));
+        return ResponseEntity.ok(new CommonResponse(true, "Plan eliminado exitosamente."));
     }
 
 
