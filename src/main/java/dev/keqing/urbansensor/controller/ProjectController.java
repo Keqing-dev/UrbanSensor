@@ -5,6 +5,7 @@ import dev.keqing.urbansensor.dao.ProjectRepository;
 import dev.keqing.urbansensor.dao.UserProjectRepository;
 import dev.keqing.urbansensor.entity.*;
 import dev.keqing.urbansensor.exception.CustomException;
+import dev.keqing.urbansensor.entity.Paging;
 import dev.keqing.urbansensor.utils.Validations;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -38,6 +39,9 @@ public class ProjectController {
 
     @Autowired
     private Validations validations;
+
+    @Autowired
+    private Paging paging;
 
     @GetMapping(value = "/latest")
     @Operation(summary = "Últimos proyectos", description = "Trae los últimos tres proyectos de un usuario, ordenados por la fecha de creación en forma descendente", security = @SecurityRequirement(name = "bearer"))
@@ -111,9 +115,9 @@ public class ProjectController {
             throw new CustomException(HttpStatus.NOT_FOUND);
         }
 
-        Paging paging = Paging.toPagination(projectList, page, "user");
+        Paging paginated = paging.toPagination(projectList, page, "user");
 
-        return ResponseEntity.ok(new CommonResponse(true, Collections.singletonList(projectList.getContent()), paging));
+        return ResponseEntity.ok(new CommonResponse(true, Collections.singletonList(projectList.getContent()), paginated));
     }
 
     @GetMapping
@@ -131,9 +135,9 @@ public class ProjectController {
             throw new CustomException(HttpStatus.NOT_FOUND);
         }
 
-        Paging paging = Paging.toPagination(projectList, page, "project");
+        Paging paginated = paging.toPagination(projectList, page, "project");
 
-        return ResponseEntity.ok(new CommonResponse(true, Collections.singletonList(projectList.getContent()), paging));
+        return ResponseEntity.ok(new CommonResponse(true, Collections.singletonList(projectList.getContent()), paginated));
     }
 
     @GetMapping(value = "/search")
@@ -146,8 +150,8 @@ public class ProjectController {
         Page<UserProject> userProjects = userProjectRepository.findAllByProject_NameContainsIgnoreCaseAndUser(search, user, pageable);
 
 
-        Paging paging = Paging.toPagination(userProjects, page, "search");
-        return ResponseEntity.ok(new CommonResponse(true, Collections.singletonList(userProjects.getContent()), paging));
+        Paging paginated = paging.toPagination(userProjects, page, "search");
+        return ResponseEntity.ok(new CommonResponse(true, Collections.singletonList(userProjects.getContent()), paginated));
     }
 
 }

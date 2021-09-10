@@ -4,40 +4,35 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.keqing.urbansensor.config.GeneralConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 
+@Service
 public class Paging {
 
     @Autowired
     private GeneralConfig generalConfig;
 
-    private final String url = generalConfig.getDomainName();
+    @Autowired
+    private Paging paging;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String previous;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String next;
 
-    public Paging(String previous, String next) {
-        this.previous = previous;
-        this.next = next;
-    }
+    public Paging toPagination(Page reports, int page, String type) {
+        Paging paginated = null;
 
-    public Paging() {
-    }
-
-
-    public static Paging toPagination(Page reports, int page, String type) {
-        Paging paging = null;
         if (reports.hasPrevious() || reports.hasNext())
-            paging = new Paging();
+            paginated = paging;
 
-        if (reports.hasNext() && paging != null)
-            paging.setNext(type + "?page=" + (page + 1));
+        if (reports.hasNext() && paginated != null)
+            paginated.setNext(type + "?page=" + (page + 1));
 
-        if (reports.hasPrevious() && paging != null)
-            paging.setPrevious(type + "?page=" + (page - 1));
+        if (reports.hasPrevious() && paginated != null)
+            paginated.setPrevious(type + "?page=" + (page - 1));
 
-        return paging;
+        return paginated;
     }
 
     public String getPrevious() {
@@ -45,7 +40,7 @@ public class Paging {
     }
 
     public void setPrevious(String previous) {
-        this.previous = url + previous;
+        this.previous = generalConfig.getDomainName() + previous;
     }
 
     public String getNext() {
@@ -53,6 +48,7 @@ public class Paging {
     }
 
     public void setNext(String next) {
-        this.next = url + next;
+        this.next = generalConfig.getDomainName() + next;
     }
+
 }

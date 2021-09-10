@@ -2,7 +2,6 @@ package dev.keqing.urbansensor.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.keqing.urbansensor.entity.Paging;
-import dev.keqing.urbansensor.projection.ReportSummary;
 
 import java.util.List;
 

@@ -5,18 +5,13 @@ import dev.keqing.urbansensor.entity.User;
 import dev.keqing.urbansensor.entity.UserProject;
 import dev.keqing.urbansensor.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class Validations {
-
 
     @Autowired
     private UserRepository userRepository;

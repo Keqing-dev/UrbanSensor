@@ -109,6 +109,14 @@ public class Report {
         this.file = file;
     }
 
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
     public User getUser() {
         return user;
     }

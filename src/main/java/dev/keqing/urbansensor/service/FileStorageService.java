@@ -50,6 +50,20 @@ public class FileStorageService {
         }
     }
 
+    public String storeFile(MultipartFile file, FileType type) throws CustomException {
+        String filename = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+
+        try {
+            Path targetLocation = getTargetLocation(filename, type);
+
+            Files.copy(file.getInputStream(), targetLocation);
+
+            return filename;
+        } catch (IOException e) {
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "No se pudo almacenar el archivo " + file.getOriginalFilename() + ". Por favor intenta nuevamente");
+        }
+    }
+
 
     public void deleteFile(String filename, FileType type) throws CustomException {
         try {
