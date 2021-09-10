@@ -4,29 +4,21 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.keqing.urbansensor.config.GeneralConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 
+@Service
 public class Paging {
 
     @Autowired
     private GeneralConfig generalConfig;
-
-    private final String url = generalConfig.getDomainName();
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String previous;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String next;
 
-    public Paging(String previous, String next) {
-        this.previous = previous;
-        this.next = next;
-    }
 
-    public Paging() {
-    }
-
-
-    public static Paging toPagination(Page reports, int page, String type) {
+    public Paging toPagination(Page reports, int page, String type) {
         Paging paging = null;
         if (reports.hasPrevious() || reports.hasNext())
             paging = new Paging();
@@ -45,7 +37,8 @@ public class Paging {
     }
 
     public void setPrevious(String previous) {
-        this.previous = url + previous;
+        System.out.println(generalConfig);
+        this.previous = generalConfig.getDomainName()+ previous;
     }
 
     public String getNext() {
@@ -53,6 +46,7 @@ public class Paging {
     }
 
     public void setNext(String next) {
-        this.next = url + next;
+        System.out.println(generalConfig);
+        this.next = generalConfig.getDomainName() + next;
     }
 }

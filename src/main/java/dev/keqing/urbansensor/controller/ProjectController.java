@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
-import java.util.List;
 
 @CrossOrigin(value = "*")
 @Tag(name = "Project")
@@ -42,17 +41,19 @@ public class ProjectController {
     @Autowired
     private Validations validations;
 
+    @Autowired
+    private Paging paging;
+
     @GetMapping(value = "/latest")
     @Operation(summary = "Últimos proyectos", description = "Trae los últimos tres proyectos de un usuario, ordenados por la fecha de creación en forma descendente", security = @SecurityRequirement(name = "bearer"))
     public ResponseEntity<CommonResponse> getLatest(HttpServletRequest request) throws CustomException {
 
         Pageable pageable = generalConfig.pageable(1, 3);
-        Page<Project> projectList = projectRepository.findLast3ProjectByUser_IdAndCountTheirReports(request.getRemoteUser(),pageable);
+        Page<Project> projectList = projectRepository.findLast3ProjectByUser_IdAndCountTheirReports(request.getRemoteUser(), pageable);
 
         if (projectList.isEmpty()) {
             throw new CustomException(HttpStatus.NOT_FOUND);
         }
-
         return ResponseEntity.ok(new CommonResponse(true, projectList.getContent()));
     }
 
@@ -103,7 +104,7 @@ public class ProjectController {
     }
 
     @GetMapping(value = "/user")
-    @Operation(summary = "Lista de proyectos", description = "Trae todos los proyectos de un usuario, ordenados por la fecha de creación en forma descendente")
+    @Operation(summary = "Lista de proyectos", description = "Trae todos los proyectos de un usuario, ordenados por la fecha de creación en forma descendente", security = @SecurityRequirement(name = "bearer"))
     public ResponseEntity<CommonResponse> getAllProjectByUser(@RequestParam String userId,
                                                               @RequestParam int page,
                                                               @RequestParam(name = "limit", required = false, defaultValue = "10") int limit) throws CustomException {
@@ -115,7 +116,7 @@ public class ProjectController {
             throw new CustomException(HttpStatus.NOT_FOUND);
         }
 
-        Paging paging = Paging.toPagination(projectList, page, "user");
+        paging.toPagination(projectList, page, "user");
 
         return ResponseEntity.ok(new CommonResponse(true, Collections.singletonList(projectList.getContent()), paging));
     }
@@ -134,8 +135,9 @@ public class ProjectController {
         if (projectList.isEmpty()) {
             throw new CustomException(HttpStatus.NOT_FOUND);
         }
+        Paging paginated = paging.toPagination(projectList, page, "");
 
-        return ResponseEntity.ok(new CommonResponse(true, projectList.getContent()));
+        return ResponseEntity.ok(new CommonResponse(true, projectList.getContent(), paginated));
     }
 
     @GetMapping(value = "/search")
@@ -148,8 +150,8 @@ public class ProjectController {
         Page<Project> userProjects = projectRepository.searchAllProjectByUserAndCountTheirReports(user.getId(), search, pageable);
 
 
-//        Paging paging = Paging.toPagination(userProjects, page, "search");
-        return ResponseEntity.ok(new CommonResponse(true, userProjects.getContent()));
+        Paging paginated = paging.toPagination(userProjects, page, "search");
+        return ResponseEntity.ok(new CommonResponse(true, userProjects.getContent(), paginated));
     }
 
 }

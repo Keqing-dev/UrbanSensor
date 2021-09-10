@@ -11,7 +11,7 @@ public class CommonResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object data;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<Object> content;
+    private Object content;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Paging paging;
 
@@ -25,7 +25,7 @@ public class CommonResponse {
         this.data = data;
     }
 
-    public CommonResponse(boolean success, List<Object> content, Paging paging) {
+    public CommonResponse(boolean success, Object content, Paging paging) {
         this.success = success;
         this.content = content;
         this.paging = paging;
@@ -55,11 +55,11 @@ public class CommonResponse {
         this.data = data;
     }
 
-    public List<Object> getContent() {
+    public Object getContent() {
         return content;
     }
 
-    public void setContent(List<Object> content) {
+    public void setContent(Object content) {
         this.content = content;
     }
 
