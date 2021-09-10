@@ -116,9 +116,9 @@ public class ProjectController {
             throw new CustomException(HttpStatus.NOT_FOUND);
         }
 
-        paging.toPagination(projectList, page, "user");
+        Paging paginated = paging.toPagination(projectList, page, "user");
 
-        return ResponseEntity.ok(new CommonResponse(true, Collections.singletonList(projectList.getContent()), paging));
+        return ResponseEntity.ok(new CommonResponse(true, projectList, paginated));
     }
 
     @GetMapping
