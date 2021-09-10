@@ -1,6 +1,8 @@
 package dev.keqing.urbansensor.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ConfigurationProperties(prefix = "config")
 public class GeneralConfig {
@@ -10,6 +12,18 @@ public class GeneralConfig {
     private String avatarDir;
     private String fileDir;
     private int itemPerPage = 10;
+
+    public int initPage(int page){
+        return page - 1 < 0 ? 0: page + 1;
+    }
+
+    public int limitPage(int limit){
+        return limit > 100 ? itemPerPage : limit;
+    }
+
+    public Pageable pageable(int page, int limit){
+        return PageRequest.of(this.initPage(page), this.limitPage(limit));
+    }
 
     public String getDomainName() {
         return domainName;
