@@ -5,8 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import dev.keqing.urbansensor.dao.UserRepository;
 import dev.keqing.urbansensor.entity.User;
 import dev.keqing.urbansensor.exception.CustomException;
-import dev.keqing.urbansensor.response.MessageResponse;
-import dev.keqing.urbansensor.response.UserResponse;
+import dev.keqing.urbansensor.entity.CommonResponse;
 import dev.keqing.urbansensor.utils.RSAKeys;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class AuthController {
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping(value = "/login")
-    ResponseEntity<UserResponse> login(@RequestBody User user) throws CustomException, IOException {
+    ResponseEntity<CommonResponse> login(@RequestBody User user) throws CustomException, IOException {
         String email = user.getEmail();
         String password = user.getPassword();
 
@@ -55,11 +54,11 @@ public class AuthController {
 
         userExists.setToken(token);
 
-        return ResponseEntity.ok(new UserResponse(true, userExists));
+        return ResponseEntity.ok(new CommonResponse(true, userExists));
     }
 
     @PostMapping(value = "/register")
-    ResponseEntity<MessageResponse> createUser(@RequestBody User user) throws CustomException {
+    ResponseEntity<CommonResponse> createUser(@RequestBody User user) throws CustomException {
 
         Optional<User> userExists = userRepository.findFirstByEmail(user.getEmail());
 
@@ -79,6 +78,6 @@ public class AuthController {
 
         userRepository.save(newUser);
 
-        return ResponseEntity.ok(new MessageResponse(true, "Usuario Creado Exitosamente"));
+        return ResponseEntity.ok(new CommonResponse(true, "Usuario Creado Exitosamente"));
     }
 }

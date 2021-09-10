@@ -2,10 +2,14 @@ package dev.keqing.urbansensor.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.keqing.urbansensor.config.GeneralConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class Paging {
 
-    private final String url = GeneralConfig.INSTANCE.getUrl();
+    @Autowired
+    private GeneralConfig generalConfig;
+
+    private final String url = generalConfig.getDomainName();
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String previous;

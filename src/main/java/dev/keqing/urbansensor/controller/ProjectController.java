@@ -1,20 +1,16 @@
 package dev.keqing.urbansensor.controller;
 
 
-import com.google.gson.Gson;
-import com.opencsv.bean.StatefulBeanToCsv;
 import dev.keqing.urbansensor.config.GeneralConfig;
 import dev.keqing.urbansensor.dao.ProjectRepository;
 import dev.keqing.urbansensor.dao.UserProjectRepository;
 import dev.keqing.urbansensor.dao.UserRepository;
+import dev.keqing.urbansensor.entity.CommonResponse;
 import dev.keqing.urbansensor.entity.Project;
 import dev.keqing.urbansensor.entity.User;
 import dev.keqing.urbansensor.entity.UserProject;
 import dev.keqing.urbansensor.exception.CustomException;
-import dev.keqing.urbansensor.response.MessageResponse;
-import dev.keqing.urbansensor.response.ProjectResponse;
-import dev.keqing.urbansensor.response.StatusResponse;
-import dev.keqing.urbansensor.response.UserProjectResponse;
+import dev.keqing.urbansensor.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,12 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @CrossOrigin(value = "*")
 @Tag(name = "Project")
@@ -40,7 +32,8 @@ import java.util.stream.Stream;
 @RequestMapping(value = "/project")
 public class ProjectController {
 
-    private final GeneralConfig generalConfig = GeneralConfig.INSTANCE;
+    @Autowired
+    private GeneralConfig generalConfig;
 
     @Autowired
     private ProjectRepository projectRepository;
@@ -53,7 +46,7 @@ public class ProjectController {
 
     @GetMapping(value = "/latest")
     @Operation(summary = "Últimos proyectos", description = "Trae los últimos tres proyectos de un usuario, ordenados por la fecha de creación en forma descendente",security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<UserProjectResponse> getLatest(HttpServletRequest request) throws CustomException {
+    public ResponseEntity<CommonResponse> getLatest(HttpServletRequest request) throws CustomException {
 
         List<UserProject> projectList = userProjectRepository.findFirst3ByUser_IdOrderByProject_CreatedAtDesc(request.getRemoteUser());
 
@@ -61,12 +54,12 @@ public class ProjectController {
             throw new CustomException(HttpStatus.NOT_FOUND);
         }
 
-        return ResponseEntity.ok(new UserProjectResponse(true, projectList));
+        return ResponseEntity.ok(new CommonResponse(true, projectList));
     }
 
     @PostMapping()
     @Operation(summary = "Creación de proyecto", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<UserProjectResponse> createProject(@RequestBody Project project, HttpServletRequest request) throws CustomException {
+    public ResponseEntity<CommonResponse> createProject(@RequestBody Project project, HttpServletRequest request) throws CustomException {
 
         User user = validateUser(request);
 
@@ -75,7 +68,7 @@ public class ProjectController {
         UserProject userProject = new UserProject(user, projectSaved);
         userProjectRepository.save(userProject);
 
-        return ResponseEntity.ok(new UserProjectResponse(true, userProject));
+        return ResponseEntity.ok(new CommonResponse(true, userProject));
     }
 
     @PatchMapping
@@ -95,7 +88,7 @@ public class ProjectController {
 
     @DeleteMapping
     @Operation(summary = "Eliminación de proyecto", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<StatusResponse> deleteProject(@RequestParam String projectId, HttpServletRequest request) throws CustomException {
+    public ResponseEntity<CommonResponse> deleteProject(@RequestParam String projectId, HttpServletRequest request) throws CustomException {
 
         User user = validateUser(request);
         UserProject userProject = userProjectRepository.findByProject_Id(projectId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Proyecto no encontrado."));
@@ -106,12 +99,12 @@ public class ProjectController {
 
         projectRepository.deleteById(projectId);
 
-        return ResponseEntity.ok(new MessageResponse(true, "Proyecto Eliminado."));
+        return ResponseEntity.ok(new CommonResponse(true, "Proyecto Eliminado."));
     }
 
     @GetMapping()
     @Operation(summary = "Lista de proyectos", description = "Trae todos los proyectos de un usuario, ordenados por la fecha de creación en forma descendente")
-    public ResponseEntity<UserProjectResponse> getAllProjectByUser(@RequestParam String userId, @RequestParam int page) throws CustomException {
+    public ResponseEntity<CommonResponse> getAllProjectByUser(@RequestParam String userId, @RequestParam int page) throws CustomException {
 
         Pageable pageable = PageRequest.of(page, generalConfig.getItemPerPage());
 
@@ -121,18 +114,18 @@ public class ProjectController {
             throw new CustomException(HttpStatus.NOT_FOUND);
         }
 
-        return ResponseEntity.ok(new UserProjectResponse(true, projectList.toList()));
+        return ResponseEntity.ok(new CommonResponse(true, projectList.toList()));
     }
 
     @GetMapping(value = "/search")
     @Operation(summary = "Buscar proyecto", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<UserProjectResponse> searchProjectByUser(@RequestParam String search, @RequestParam int page, HttpServletRequest request) throws CustomException {
+    public ResponseEntity<CommonResponse> searchProjectByUser(@RequestParam String search, @RequestParam int page, HttpServletRequest request) throws CustomException {
         User user = validateUser(request);
 
         Pageable pageable = PageRequest.of(page, generalConfig.getItemPerPage());
         Page<UserProject> userProjects = userProjectRepository.findAllByProject_NameContainsIgnoreCaseAndUser(search, user, pageable);
 
-        return ResponseEntity.ok(new UserProjectResponse(true, userProjects.toList()));
+        return ResponseEntity.ok(new CommonResponse(true, userProjects.toList()));
     }
 
     private void validateUserProject(User user, UserProject userProject) throws CustomException {

@@ -3,10 +3,8 @@ package dev.keqing.urbansensor.controller;
 import dev.keqing.urbansensor.config.GeneralConfig;
 import dev.keqing.urbansensor.dao.PlanRepository;
 import dev.keqing.urbansensor.entity.Plan;
-import dev.keqing.urbansensor.entity.User;
 import dev.keqing.urbansensor.exception.CustomException;
-import dev.keqing.urbansensor.response.MessageResponse;
-import dev.keqing.urbansensor.response.StatusResponse;
+import dev.keqing.urbansensor.entity.CommonResponse;
 import dev.keqing.urbansensor.utils.Validations;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -23,22 +21,23 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/plan")
 public class PlanController {
 
-    private final GeneralConfig generalConfig = GeneralConfig.INSTANCE;
+    @Autowired
+    private GeneralConfig generalConfig;
 
     @Autowired
     private PlanRepository planRepository;
 
-    private Validations validations = new Validations();
+    private final Validations validations = new Validations();
 
     @PostMapping()
     @Operation(summary = "Creación de plan", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<MessageResponse> createPlan(@RequestBody Plan plan, HttpServletRequest request) throws CustomException {
+    public ResponseEntity<CommonResponse> createPlan(@RequestBody Plan plan, HttpServletRequest request) throws CustomException {
 
         validations.validateUser(request);
 
         planRepository.save(plan);
 
-        return ResponseEntity.ok(new MessageResponse(true, "Plan creado exitosamente."));
+        return ResponseEntity.ok(new CommonResponse(true, "Plan creado exitosamente."));
     }
 
 
