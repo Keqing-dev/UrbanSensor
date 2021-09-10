@@ -12,4 +12,7 @@ import java.util.Optional;
 public interface ReportRepository extends JpaRepository<Report,String> {
     Page<ReportSummary> findAllByUser(User user, Pageable pageable);
     Optional<Report> findByIdAndUser(String id, User user);
+
+
+
 }

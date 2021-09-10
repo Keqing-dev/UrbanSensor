@@ -16,6 +16,7 @@ public class Project {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(nullable = false, unique = true)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private String id;
 
     @Column(nullable = false)
@@ -32,8 +33,24 @@ public class Project {
     Set<Report> reports;
 
 
-    /** --- TRANSIENTS --- **/
+    /**
+     * --- TRANSIENTS ---
+     **/
+    @Transient
+    @Column(table = "reportsCount")
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    private Long reportsCount = 0L;
 
+
+    public Project(Project p, Long reportsCount) {
+        this.id = p.getId();
+        this.name = p.getName();
+        this.createdAt = p.getCreatedAt();
+        this.reportsCount = reportsCount;
+    }
+
+    public Project() {
+    }
 
     public String getId() {
         return id;
@@ -55,4 +72,11 @@ public class Project {
         return createdAt;
     }
 
+    public Long getReportsCount() {
+        return reportsCount;
+    }
+
+    public void setReportsCount(Long reportsCount) {
+        this.reportsCount = reportsCount;
+    }
 }
