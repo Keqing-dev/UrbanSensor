@@ -28,5 +28,4 @@ config:
   upload-dir: uploads/urbansensor
   avatar-dir: avatar
   file-dir: file
-  domain-name: https://urban.keqing.dev/
 
