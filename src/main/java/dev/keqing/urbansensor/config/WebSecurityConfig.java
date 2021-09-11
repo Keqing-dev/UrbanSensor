@@ -30,9 +30,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/user/avatar/**",
             "/docs/**",
             "/docs.html/**",
-//            "/**",//solo en desarrollo
-
-
     };
 
     private final String[] POST_WHITELIST = {
@@ -41,9 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
     private final String[] GET_WHITELIST = {
-            "/project/latest",
             "/plan",
-
+            "/uploads/**",
     };
 
     @Override
@@ -60,11 +56,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-//    @Override
-//    @Bean
-//    public AuthenticationManager authenticationManagerBean() throws Exception {
-//        return super.authenticationManagerBean();
-//    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

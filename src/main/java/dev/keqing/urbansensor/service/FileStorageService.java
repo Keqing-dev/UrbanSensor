@@ -5,11 +5,14 @@ import dev.keqing.urbansensor.exception.CustomException;
 import dev.keqing.urbansensor.utils.FileType;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,6 +36,21 @@ public class FileStorageService {
         }
     }
 
+    public Resource loadFileAsResource(String filename, FileType type) throws CustomException {
+        try {
+            Path filePath = getTargetLocation(filename, type);
+
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists())
+                return resource;
+            else
+                throw new CustomException(HttpStatus.NOT_FOUND);
+        } catch (MalformedURLException e) {
+            throw new CustomException(HttpStatus.NOT_FOUND);
+        }
+    }
+
     public String storeFile(MultipartFile file, FileType type, String oldFilename) throws CustomException {
         String filename = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
 
@@ -41,7 +59,7 @@ public class FileStorageService {
 
             Files.copy(file.getInputStream(), targetLocation);
 
-            if(oldFilename != null && !oldFilename.isBlank())
+            if (oldFilename != null && !oldFilename.isBlank())
                 deleteFile(oldFilename, type);
 
             return filename;
@@ -76,13 +94,13 @@ public class FileStorageService {
     }
 
     private Path getTargetLocation(String filename, FileType type) {
-        switch(type) {
+        switch (type) {
             case AVATAR:
                 return this.avatarLocation.resolve(filename);
             case FILE:
                 return this.fileLocation.resolve(filename);
             default:
-                throw new IllegalStateException("Unexpected value: " + type);
+                throw new IllegalStateException("Valor Inesperado: " + type);
         }
     }
 }

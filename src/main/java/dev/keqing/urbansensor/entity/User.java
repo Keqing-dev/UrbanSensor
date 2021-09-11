@@ -3,6 +3,8 @@ package dev.keqing.urbansensor.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import dev.keqing.urbansensor.utils.AvatarURLConverter;
 import dev.keqing.urbansensor.utils.ToLowerCaseConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.GenericGenerator;
@@ -40,6 +42,7 @@ public class User {
     @Column(unique = true)
     private String googleId;
 
+    @JsonSerialize(converter = AvatarURLConverter.class)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String avatar;
 

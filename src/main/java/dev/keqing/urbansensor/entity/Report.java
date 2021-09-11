@@ -1,6 +1,9 @@
 package dev.keqing.urbansensor.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import dev.keqing.urbansensor.utils.FileURLConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -38,6 +41,7 @@ public class Report {
     @Column(columnDefinition = "TEXT")
     private String observations;
 
+    @JsonSerialize(converter = FileURLConverter.class)
     @Column(nullable = false)
     private String file;
 
