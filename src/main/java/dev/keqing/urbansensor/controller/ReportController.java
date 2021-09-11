@@ -5,11 +5,14 @@ import dev.keqing.urbansensor.dao.ProjectRepository;
 import dev.keqing.urbansensor.dao.ReportRepository;
 import dev.keqing.urbansensor.entity.*;
 import dev.keqing.urbansensor.exception.CustomException;
+import dev.keqing.urbansensor.projection.ReportFile;
 import dev.keqing.urbansensor.projection.ReportSummary;
 import dev.keqing.urbansensor.service.FileStorageService;
 import dev.keqing.urbansensor.utils.FileType;
 import dev.keqing.urbansensor.entity.Paging;
 import dev.keqing.urbansensor.utils.Validations;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Report")
 @RestController
@@ -46,8 +50,8 @@ public class ReportController {
     @Autowired
     private Paging paging;
 
-
     @PostMapping
+    @Operation(summary = "Creación de reporte", security = @SecurityRequirement(name = "bearer"))
     ResponseEntity<CommonResponse> createReport(
             @RequestParam(value = "file") MultipartFile file,
             @RequestParam(value = "latitude") String latitude,
@@ -81,6 +85,7 @@ public class ReportController {
     }
 
     @GetMapping
+    @Operation(summary = "Mis reportes", security = @SecurityRequirement(name = "bearer"))
     ResponseEntity<CommonResponse> getAll(@RequestParam(name = "page") int page,
                                           @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
                                           @RequestParam(name = "sortBy", required = false, defaultValue = "timestampDESC") String sortBy,
@@ -103,6 +108,7 @@ public class ReportController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Obtención de reporte", security = @SecurityRequirement(name = "bearer"))
     ResponseEntity<CommonResponse> get(@PathVariable String id, HttpServletRequest request) throws CustomException {
         User user = validations.validateUser(request);
 
@@ -110,4 +116,22 @@ public class ReportController {
 
         return ResponseEntity.ok(new CommonResponse(true, report));
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar reporte", security = @SecurityRequirement(name = "bearer"))
+    ResponseEntity<CommonResponse> deleteReport(@PathVariable String id, HttpServletRequest request) throws CustomException {
+
+        validations.validateUser(request);
+
+        Report report = reportRepository.findById(id).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND));
+
+        fileStorageService.deleteFile(report.getFile(),FileType.FILE);
+
+        reportRepository.delete(report);
+
+        return ResponseEntity.ok(new CommonResponse(true, "Reporte eliminado exitosamente."));
+
+    }
+
+
 }
