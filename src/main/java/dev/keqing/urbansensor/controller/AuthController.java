@@ -2,11 +2,14 @@ package dev.keqing.urbansensor.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import dev.keqing.urbansensor.dao.PlanRepository;
 import dev.keqing.urbansensor.dao.UserRepository;
+import dev.keqing.urbansensor.entity.Plan;
 import dev.keqing.urbansensor.entity.User;
 import dev.keqing.urbansensor.exception.CustomException;
 import dev.keqing.urbansensor.entity.CommonResponse;
 import dev.keqing.urbansensor.utils.RSAKeys;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,24 +31,29 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PlanRepository planRepository;
+
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping(value = "/login")
-    ResponseEntity<CommonResponse> login(@RequestBody User user) throws CustomException, IOException {
+    @Operation(summary = "Autenticación")
+    ResponseEntity<CommonResponse> login(@RequestBody User.Login user) throws CustomException, IOException {
+
         String email = user.getEmail();
         String password = user.getPassword();
 
         if (password == null || email == null) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "Datos Invalidos, Intenta Nuevamente");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "Datos Inválidos, Intenta Nuevamente");
         }
 
         User userExists =
-                userRepository.findFirstByEmail(email).orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Datos Invalidos, Intenta Nuevamente"));
+                userRepository.findFirstByEmail(email).orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Datos Inválidos, Intenta Nuevamente"));
 
         String passwordEncoded = userExists.getPassword();
 
         if (!bCryptPasswordEncoder.matches(password, passwordEncoded)) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "Datos Invalidos, Intenta Nuevamente");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "Datos Inválidos, Intenta Nuevamente");
         }
 
         Algorithm algorithm = RSAKeys.getAlgorithm();
@@ -58,10 +66,11 @@ public class AuthController {
     }
 
     @PostMapping(value = "/register")
-    ResponseEntity<CommonResponse> createUser(@RequestBody User user) throws CustomException {
+    @Operation(summary = "Creación de usuario")
+    ResponseEntity<CommonResponse> createUser(@RequestBody User.Register user) throws CustomException {
 
         Optional<User> userExists = userRepository.findFirstByEmail(user.getEmail());
-
+        Plan plan = planRepository.findById(user.getPlanId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "El plan seleccionado no existe."));
         if (userExists.isPresent())
             throw new CustomException(HttpStatus.BAD_REQUEST, "Ya existe un usuario con este email");
 
@@ -74,7 +83,8 @@ public class AuthController {
         newUser.setName(user.getName());
         newUser.setLastName(user.getLastName());
         newUser.setProfession(user.getProfession());
-        newUser.setPlan(user.getPlan());
+        newUser.setPlan(plan);
+        newUser.setGoogleId(user.getGoogleId());
 
         userRepository.save(newUser);
 
