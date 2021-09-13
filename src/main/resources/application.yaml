@@ -17,7 +17,11 @@ spring:
       max-file-size: 10MB
       max-request-size: 15MB
   profiles:
-    active: dev
+    active: prod
+  sql:
+    init:
+      mode:
+      continue-on-error: true
 
 springdoc:
   swagger-ui:
@@ -25,7 +29,7 @@ springdoc:
     path: /docs
 
 config:
-  upload-dir: uploads/urbansensor
+  upload-dir: uploads
   avatar-dir: avatar
   file-dir: file
 

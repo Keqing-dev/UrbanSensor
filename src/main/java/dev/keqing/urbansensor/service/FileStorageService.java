@@ -25,8 +25,8 @@ public class FileStorageService {
 
     @Autowired
     public FileStorageService(GeneralConfig generalConfig) throws CustomException {
-        this.avatarLocation = Paths.get("").toAbsolutePath().getParent().resolve(generalConfig.getUploadDir()).resolve(generalConfig.getAvatarDir()).normalize();
-        this.fileLocation = Paths.get("").toAbsolutePath().getParent().resolve(generalConfig.getUploadDir()).resolve(generalConfig.getFileDir()).normalize();
+        this.avatarLocation = Paths.get("").toAbsolutePath().resolve(generalConfig.getUploadDir()).resolve(generalConfig.getAvatarDir()).normalize();
+        this.fileLocation = Paths.get("").toAbsolutePath().resolve(generalConfig.getUploadDir()).resolve(generalConfig.getFileDir()).normalize();
 
         try {
             Files.createDirectories(this.avatarLocation);
