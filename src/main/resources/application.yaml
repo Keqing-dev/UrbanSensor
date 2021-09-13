@@ -17,7 +17,7 @@ spring:
       max-file-size: 10MB
       max-request-size: 15MB
   profiles:
-    active: dev
+    active: prod
 
 springdoc:
   swagger-ui:
