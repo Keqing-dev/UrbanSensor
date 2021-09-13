@@ -3,6 +3,7 @@ package dev.keqing.urbansensor.controller;
 import dev.keqing.urbansensor.exception.CustomException;
 import dev.keqing.urbansensor.service.FileStorageService;
 import dev.keqing.urbansensor.utils.FileType;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@Hidden
 @RestController
 @RequestMapping("uploads")
 public class UploadsController {
