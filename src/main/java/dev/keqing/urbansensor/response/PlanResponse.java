@@ -2,51 +2,41 @@ package dev.keqing.urbansensor.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.keqing.urbansensor.entity.Paging;
-import dev.keqing.urbansensor.entity.Project;
+import dev.keqing.urbansensor.entity.Plan;
 
 import java.util.List;
 
-public class ProjectResponse extends StatusResponse {
-
+public class PlanResponse extends StatusResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public Project data;
+    public Plan data;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Paging paging;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public List<Project> content;
+    public List<Plan> content;
 
-    public ProjectResponse(boolean success, Project data) {
+    public PlanResponse(Boolean success, Plan data) {
         super(success);
         this.data = data;
     }
 
-    public ProjectResponse(boolean success, List<Project> data) {
+    public PlanResponse(boolean success, List<Plan> content) {
         super(success);
-        this.content = data;
+        this.content = content;
     }
-
-    public ProjectResponse(boolean success, List<Project> data, Paging paging) {
+    public PlanResponse(boolean success, List<Plan> content,Paging paging) {
         super(success);
-        this.content = data;
         this.paging = paging;
+        this.content = content;
     }
 
-    public Project getData() {
+    public Plan getData() {
         return data;
     }
 
-    public void setData(Project data) {
+    public void setData(Plan data) {
         this.data = data;
-    }
-
-    public List<Project> getContent() {
-        return content;
-    }
-
-    public void setContent(List<Project> content) {
-        this.content = content;
     }
 
     public Paging getPaging() {
@@ -55,5 +45,13 @@ public class ProjectResponse extends StatusResponse {
 
     public void setPaging(Paging paging) {
         this.paging = paging;
+    }
+
+    public List<Plan> getContent() {
+        return content;
+    }
+
+    public void setContent(List<Plan> content) {
+        this.content = content;
     }
 }

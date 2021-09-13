@@ -18,6 +18,7 @@ spring:
       max-request-size: 15MB
   profiles:
     active: prod
+
   sql:
     init:
       mode:
