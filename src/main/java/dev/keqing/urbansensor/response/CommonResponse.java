@@ -91,4 +91,46 @@ public class CommonResponse {
             this.message = message;
         }
     }
+
+    public static class Content {
+        private boolean success;
+        private Object content;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        private Paging paging;
+
+        public Content(boolean success, Object content) {
+            this.success = success;
+            this.content = content;
+        }
+
+        public Content(boolean success, Object content, Paging paging) {
+            this.success = success;
+            this.content = content;
+            this.paging = paging;
+        }
+
+        public boolean isSuccess() {
+            return success;
+        }
+
+        public void setSuccess(boolean success) {
+            this.success = success;
+        }
+
+        public Object getContent() {
+            return content;
+        }
+
+        public void setContent(Object content) {
+            this.content = content;
+        }
+
+        public Paging getPaging() {
+            return paging;
+        }
+
+        public void setPaging(Paging paging) {
+            this.paging = paging;
+        }
+    }
 }

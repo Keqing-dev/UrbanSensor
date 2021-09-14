@@ -176,7 +176,7 @@ public class ProjectController {
             @ApiResponse(responseCode = "200", description = "Lista de Proyectos", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ProjectResponse.ProjectContent.class))}),
             @ApiResponse(responseCode = "404", description = "Proyectos no Encontrados", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
-    public ResponseEntity<CommonResponse> getLatest(HttpServletRequest request) throws CustomException {
+    public ResponseEntity<CommonResponse.Content> getLatest(HttpServletRequest request) throws CustomException {
 
         Pageable pageable = generalConfig.pageable(1, 3);
         Page<Project> projectList = projectRepository.findLast3ProjectByUser_IdAndCountTheirReports(request.getRemoteUser(), pageable);
@@ -184,7 +184,7 @@ public class ProjectController {
         if (projectList.isEmpty()) {
             throw new CustomException(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(new CommonResponse(true, projectList.getContent()));
+        return ResponseEntity.ok(new CommonResponse.Content(true, projectList.getContent()));
     }
 
     @GetMapping(value = "/search")
