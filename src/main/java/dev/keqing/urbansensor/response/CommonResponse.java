@@ -1,6 +1,7 @@
-package dev.keqing.urbansensor.entity;
+package dev.keqing.urbansensor.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import dev.keqing.urbansensor.entity.Paging;
 
 
 public class CommonResponse {
@@ -68,5 +69,26 @@ public class CommonResponse {
 
     public void setPaging(Paging paging) {
         this.paging = paging;
+    }
+
+    public static class Message {
+        private boolean success;
+        private String message;
+
+        public boolean isSuccess() {
+            return success;
+        }
+
+        public void setSuccess(boolean success) {
+            this.success = success;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
     }
 }

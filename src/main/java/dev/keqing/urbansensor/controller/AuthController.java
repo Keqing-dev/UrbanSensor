@@ -7,9 +7,13 @@ import dev.keqing.urbansensor.dao.UserRepository;
 import dev.keqing.urbansensor.entity.Plan;
 import dev.keqing.urbansensor.entity.User;
 import dev.keqing.urbansensor.exception.CustomException;
-import dev.keqing.urbansensor.entity.CommonResponse;
+import dev.keqing.urbansensor.response.CommonResponse;
 import dev.keqing.urbansensor.utils.RSAKeys;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,6 +42,10 @@ public class AuthController {
 
     @PostMapping(value = "/login")
     @Operation(summary = "Autenticación")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login Exitoso", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}),
+            @ApiResponse(responseCode = "400", description = "Datos Inválidos", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
+    })
     ResponseEntity<CommonResponse> login(@RequestBody User.Login user) throws CustomException, IOException {
 
         String email = user.getEmail();
@@ -67,6 +75,11 @@ public class AuthController {
 
     @PostMapping(value = "/register")
     @Operation(summary = "Creación de usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Registro Exitoso", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
+            @ApiResponse(responseCode = "400", description = "Email Duplicado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
+            @ApiResponse(responseCode = "404", description = "Plan no Encontrado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
+    })
     ResponseEntity<CommonResponse> createUser(@RequestBody User.Register user) throws CustomException {
 
         Optional<User> userExists = userRepository.findFirstByEmail(user.getEmail());

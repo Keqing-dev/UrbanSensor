@@ -14,13 +14,13 @@ import java.util.Optional;
 
 public interface ReportRepository extends JpaRepository<Report,String> {
 
-    Page<ReportSummary> findAllByUser(User user, Pageable pageable);
+    <T> Page<T> findAllByUser(User user, Pageable pageable, Class<T> type);
 
-    Optional<Report> findByIdAndUser(String id, User user);
+    <T> Optional<T> findByIdAndUser(String id, User user, Class<T> type);
 
     List<ReportFile> findAllByProject_Id(String projectId);
 
-    Page<ReportSummary> findAllByProject_IdOrderByTimestampDesc(String projectId,Pageable pageable);
+    <T> Page<T> findAllByProject_IdOrderByTimestampDesc(String projectId,Pageable pageable, Class<T> type);
 
     @Transactional
     void deleteAllByProject_Id(String projectId);

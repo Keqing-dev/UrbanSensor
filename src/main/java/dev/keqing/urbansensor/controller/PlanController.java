@@ -1,14 +1,16 @@
 package dev.keqing.urbansensor.controller;
 
-import dev.keqing.urbansensor.config.GeneralConfig;
 import dev.keqing.urbansensor.dao.PlanRepository;
+import dev.keqing.urbansensor.response.CommonResponse;
 import dev.keqing.urbansensor.entity.Plan;
 import dev.keqing.urbansensor.exception.CustomException;
-import dev.keqing.urbansensor.entity.CommonResponse;
-import dev.keqing.urbansensor.response.MessageResponse;
 import dev.keqing.urbansensor.response.PlanResponse;
 import dev.keqing.urbansensor.utils.Validations;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +36,11 @@ public class PlanController {
 
     @PostMapping
     @Operation(summary = "Creación de plan", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<MessageResponse> createPlan(@RequestBody Plan plan, HttpServletRequest request) throws CustomException {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Plan Creado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
+            @ApiResponse(responseCode = "400", description = "Nombre Inválido", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
+    })
+    public ResponseEntity<CommonResponse> createPlan(@RequestBody Plan.Create plan, HttpServletRequest request) throws CustomException {
 
         validations.validateUser(request);
 
@@ -42,23 +48,37 @@ public class PlanController {
             throw new CustomException(HttpStatus.BAD_REQUEST);
         }
 
-        planRepository.save(plan);
+        Plan newPlan = new Plan();
+        newPlan.setName(plan.getName());
 
-        return ResponseEntity.ok(new MessageResponse(true, "Plan creado exitosamente."));
+        planRepository.save(newPlan);
+
+        return ResponseEntity.ok(new CommonResponse(true, "Plan creado exitosamente."));
     }
 
     @GetMapping
     @Operation(summary = "Lista de planes")
-    public ResponseEntity<PlanResponse> getAll() {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de Planes", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PlanResponse.PlanData.class))}),
+            @ApiResponse(responseCode = "404", description = "Planes no Encontrados", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
+    })
+    public ResponseEntity<CommonResponse> getAll() throws CustomException {
 
         List<Plan> planList = planRepository.findAll();
 
-        return ResponseEntity.ok(new PlanResponse(true, planList));
+        if (planList.isEmpty())
+            throw new CustomException(HttpStatus.NOT_FOUND, "No existen planes actualmente");
+
+        return ResponseEntity.ok(new CommonResponse(true, planList));
     }
 
     @DeleteMapping
     @Operation(summary = "Eliminar pan", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<MessageResponse> deletePlan(@RequestParam String planId) throws CustomException {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Plan Eliminado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
+            @ApiResponse(responseCode = "404", description = "Plan no Encontrado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
+    })
+    public ResponseEntity<CommonResponse> deletePlan(@RequestParam String planId) throws CustomException {
 
         Optional<Plan> plan = planRepository.findById(planId);
 
@@ -68,8 +88,7 @@ public class PlanController {
 
         planRepository.deleteById(planId);
 
-        return ResponseEntity.ok(new MessageResponse(true, "Plan eliminado exitosamente."));
+        return ResponseEntity.ok(new CommonResponse(true, "Plan eliminado exitosamente."));
     }
-
 
 }

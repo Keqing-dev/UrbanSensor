@@ -1,6 +1,6 @@
 package dev.keqing.urbansensor.exception;
 
-import dev.keqing.urbansensor.entity.CommonResponse;
+import dev.keqing.urbansensor.response.CommonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

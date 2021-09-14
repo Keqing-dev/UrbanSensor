@@ -6,54 +6,49 @@ import dev.keqing.urbansensor.entity.Project;
 
 import java.util.List;
 
-public class ProjectResponse extends StatusResponse {
+public class ProjectResponse {
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public Project data;
+    public static class ProjectData extends StatusResponse {
+        private Project data;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Paging paging;
+        public ProjectData(boolean success, Project data) {
+            super(success);
+            this.data = data;
+        }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public List<Project> content;
+        public Project getData() {
+            return data;
+        }
 
-    public ProjectResponse(boolean success, Project data) {
-        super(success);
-        this.data = data;
+        public void setData(Project data) {
+            this.data = data;
+        }
     }
 
-    public ProjectResponse(boolean success, List<Project> data) {
-        super(success);
-        this.content = data;
-    }
+    public static class ProjectContent extends StatusResponse {
+        private List<Project> content;
+        private Paging paging;
 
-    public ProjectResponse(boolean success, List<Project> data, Paging paging) {
-        super(success);
-        this.content = data;
-        this.paging = paging;
-    }
+        public ProjectContent(boolean success, List<Project> content, Paging paging) {
+            super(success);
+            this.content = content;
+            this.paging = paging;
+        }
 
-    public Project getData() {
-        return data;
-    }
+        public List<Project> getContent() {
+            return content;
+        }
 
-    public void setData(Project data) {
-        this.data = data;
-    }
+        public void setContent(List<Project> content) {
+            this.content = content;
+        }
 
-    public List<Project> getContent() {
-        return content;
-    }
+        public Paging getPaging() {
+            return paging;
+        }
 
-    public void setContent(List<Project> content) {
-        this.content = content;
-    }
-
-    public Paging getPaging() {
-        return paging;
-    }
-
-    public void setPaging(Paging paging) {
-        this.paging = paging;
+        public void setPaging(Paging paging) {
+            this.paging = paging;
+        }
     }
 }

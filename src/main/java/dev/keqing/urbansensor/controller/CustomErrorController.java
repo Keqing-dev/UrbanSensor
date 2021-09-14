@@ -1,6 +1,6 @@
 package dev.keqing.urbansensor.controller;
 
-import dev.keqing.urbansensor.entity.CommonResponse;
+import dev.keqing.urbansensor.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;

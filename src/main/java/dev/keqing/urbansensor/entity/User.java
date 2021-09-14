@@ -6,10 +6,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import dev.keqing.urbansensor.utils.AvatarURLConverter;
 import dev.keqing.urbansensor.utils.ToLowerCaseConverter;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Table
@@ -40,6 +44,7 @@ public class User {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Column(unique = true)
+    @Hidden
     private String googleId;
 
     @JsonSerialize(converter = AvatarURLConverter.class)
@@ -148,7 +153,11 @@ public class User {
     }
 
     public static class Login {
+        @JsonDeserialize(converter = ToLowerCaseConverter.class)
+        @NotNull
+        @Email()
         private String email;
+        @NotNull
         private String password;
 
         public String getEmail() {
@@ -169,12 +178,20 @@ public class User {
     }
 
     public static class Register {
+        @JsonDeserialize(converter = ToLowerCaseConverter.class)
+        @NotNull
+        @Email()
         private String email;
+        @NotNull
         private String password;
+        @NotNull
         private String name;
+        @NotNull
         private String lastName;
+        @NotNull
         private String profession;
         private String googleId;
+        @NotNull
         private String planId;
 
         public String getEmail() {

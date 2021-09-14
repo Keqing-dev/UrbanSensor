@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -16,13 +17,11 @@ public class Project {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(nullable = false, unique = true)
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private String id;
 
     @Column(nullable = false)
     private String name;
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -38,7 +37,6 @@ public class Project {
      **/
     @Transient
     @Column(table = "reportsCount")
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Long reportsCount = 0L;
 
 
@@ -54,6 +52,10 @@ public class Project {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -78,5 +80,41 @@ public class Project {
 
     public void setReportsCount(Long reportsCount) {
         this.reportsCount = reportsCount;
+    }
+
+    public static class Create {
+        @NotNull
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+    
+    public static class Update {
+        @NotNull
+        private String id;
+        @NotNull
+        private String name;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 }

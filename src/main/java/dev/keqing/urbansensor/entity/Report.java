@@ -1,7 +1,6 @@
 package dev.keqing.urbansensor.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import dev.keqing.urbansensor.utils.FileURLConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -128,4 +127,5 @@ public class Report {
     public void setUser(User user) {
         this.user = user;
     }
+
 }
