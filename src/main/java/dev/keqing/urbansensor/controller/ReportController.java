@@ -117,13 +117,13 @@ public class ReportController {
 
     @GetMapping("/project")
     @Operation(summary = "Reportes de un proyecto", security = @SecurityRequirement(name = "bearer"))
-    ResponseEntity<CommonResponse> getReportsByProject(@RequestParam String projectId, @RequestParam int page) {
+    ResponseEntity<CommonResponse> getReportsByProject(@RequestParam String id, @RequestParam int page) {
 
-        Page<ReportSummary> reportSummaries = reportRepository.findAllByProject_IdOrderByTimestampDesc(projectId, generalConfig.pageable(page, 10));
+        Page<ReportSummary> reportSummaries = reportRepository.findAllByProject_IdOrderByTimestampDesc(id, generalConfig.pageable(page, 10));
 
         Paging paging = new Paging().toPagination(reportSummaries, page, "/report/project");
 
-        return ResponseEntity.ok(new CommonResponse(true, reportSummaries, paging));
+        return ResponseEntity.ok(new CommonResponse(true, reportSummaries.getContent(), paging));
 
     }
 
