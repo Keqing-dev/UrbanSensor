@@ -5,7 +5,6 @@ import dev.keqing.urbansensor.dao.ProjectRepository;
 import dev.keqing.urbansensor.dao.ReportRepository;
 import dev.keqing.urbansensor.entity.*;
 import dev.keqing.urbansensor.exception.CustomException;
-import dev.keqing.urbansensor.projection.ReportFile;
 import dev.keqing.urbansensor.projection.ReportSummary;
 import dev.keqing.urbansensor.service.FileStorageService;
 import dev.keqing.urbansensor.utils.FileType;
@@ -26,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Optional;
 
 @Tag(name = "Report")
 @RestController
@@ -117,6 +115,19 @@ public class ReportController {
         return ResponseEntity.ok(new CommonResponse(true, report));
     }
 
+    @GetMapping("/project")
+    @Operation(summary = "Reportes de un proyecto", security = @SecurityRequirement(name = "bearer"))
+    ResponseEntity<CommonResponse> getReportsByProject(@RequestParam String projectId, @RequestParam int page) {
+
+        Page<ReportSummary> reportSummaries = reportRepository.findAllByProject_IdOrderByTimestampDesc(projectId, generalConfig.pageable(page, 10));
+
+        Paging paging = new Paging().toPagination(reportSummaries, page, "/report/project");
+
+        return ResponseEntity.ok(new CommonResponse(true, reportSummaries, paging));
+
+    }
+
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar reporte", security = @SecurityRequirement(name = "bearer"))
     ResponseEntity<CommonResponse> deleteReport(@PathVariable String id, HttpServletRequest request) throws CustomException {
@@ -125,7 +136,7 @@ public class ReportController {
 
         Report report = reportRepository.findById(id).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND));
 
-        fileStorageService.deleteFile(report.getFile(),FileType.FILE);
+        fileStorageService.deleteFile(report.getFile(), FileType.FILE);
 
         reportRepository.delete(report);
 

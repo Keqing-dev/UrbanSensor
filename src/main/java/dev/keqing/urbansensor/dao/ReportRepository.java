@@ -20,6 +20,8 @@ public interface ReportRepository extends JpaRepository<Report,String> {
 
     List<ReportFile> findAllByProject_Id(String projectId);
 
+    Page<ReportSummary> findAllByProject_IdOrderByTimestampDesc(String projectId,Pageable pageable);
+
     @Transactional
     void deleteAllByProject_Id(String projectId);
 
