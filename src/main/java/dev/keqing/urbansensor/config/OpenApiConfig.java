@@ -23,34 +23,35 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("UrbanSensor")
-                        .description("<h1 class='chOOHy'>Common Status Codes</h1>\n" +
-                                "\n" +
-                                "<table>\n" +
-                                "    <thead>\n" +
-                                "    <tr>\n" +
-                                "        <th>Status Code</th>\n" +
-                                "        <th>Description</th>\n" +
-                                "    </tr>\n" +
-                                "    </thead>\n" +
-                                "    <tbody>\n" +
-                                "    <tr>\n" +
-                                "        <td>400 Bad Request</td>\n" +
-                                "        <td>Parámetros o formato inválido, campos faltantes</td>\n" +
-                                "    </tr>\n" +
-                                "    <tr>\n" +
-                                "        <td>403 Forbidden</td>\n" +
-                                "        <td>No autorizado</td>\n" +
-                                "    </tr>\n" +
-                                "    <tr>\n" +
-                                "        <td>404 Not Found</td>\n" +
-                                "        <td></td>\n" +
-                                "    </tr>\n" +
-                                "    <tr>\n" +
-                                "        <td>500 Internal Server Error</td>\n" +
-                                "        <td></td>\n" +
-                                "    </tr>\n" +
-                                "    </tbody>\n" +
-                                "</table>")
+                        .description("<div class='chOOHy'>\n" +
+                                "    <h1>Common Status Codes</h1>\n" +
+                                "    <table>\n" +
+                                "        <thead>\n" +
+                                "        <tr>\n" +
+                                "            <th>Status Code</th>\n" +
+                                "            <th>Description</th>\n" +
+                                "        </tr>\n" +
+                                "        </thead>\n" +
+                                "        <tbody>\n" +
+                                "        <tr>\n" +
+                                "            <td>400 Bad Request</td>\n" +
+                                "            <td>Parámetros o formato inválido, campos faltantes</td>\n" +
+                                "        </tr>\n" +
+                                "        <tr>\n" +
+                                "            <td>403 Forbidden</td>\n" +
+                                "            <td>No autorizado</td>\n" +
+                                "        </tr>\n" +
+                                "        <tr>\n" +
+                                "            <td>404 Not Found</td>\n" +
+                                "            <td></td>\n" +
+                                "        </tr>\n" +
+                                "        <tr>\n" +
+                                "            <td>500 Internal Server Error</td>\n" +
+                                "            <td></td>\n" +
+                                "        </tr>\n" +
+                                "        </tbody>\n" +
+                                "    </table>\n" +
+                                "</div>")
                         .version("v0.0.1")
                         .license(new License().name("Apache 2.0").url(""))
                         .contact(new Contact().name("keqing.dev"))
