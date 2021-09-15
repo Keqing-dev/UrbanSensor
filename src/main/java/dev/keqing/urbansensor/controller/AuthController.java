@@ -68,17 +68,11 @@ public class AuthController {
         String email = user.getEmail();
         String password = user.getPassword();
 
-        System.out.println("a");
-
         if (password == null || email == null) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "Datos Inválidos, Intenta Nuevamente");
         }
 
-        System.out.println("b");
-
         User userExists = userRepository.findFirstByEmail(email).orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST));
-
-        System.out.println("c");
 
         String passwordEncoded = userExists.getPassword();
 
@@ -86,15 +80,11 @@ public class AuthController {
             throw new CustomException(HttpStatus.BAD_REQUEST);
         }
 
-        System.out.println("d");
-
         Algorithm algorithm = RSAKeys.getAlgorithm();
 
-        System.out.println("F?");
         String token = JWT.create().withSubject(userExists.getId()).withIssuedAt(new Date()).sign(algorithm);
-        System.out.println("F??");
+
         userExists.setToken(token);
-        System.out.println("F");
 
         return ResponseEntity.ok(new CommonResponse(true, userExists));
     }

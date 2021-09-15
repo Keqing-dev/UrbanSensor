@@ -91,7 +91,7 @@ public class ReportController {
 
         reportRepository.save(newReport);
 
-        return ResponseEntity.ok(new CommonResponse(true, "Proyecto Creado Exitosamente"));
+        return ResponseEntity.ok(new CommonResponse(true, "Reporte Creado Exitosamente"));
     }
 
     @GetMapping
