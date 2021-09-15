@@ -23,7 +23,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("UrbanSensor")
-                        .description("<h1>Common Status Codes</h1>\n" +
+                        .description("<h1 class='chOOHy'>Common Status Codes</h1>\n" +
                                 "\n" +
                                 "<table>\n" +
                                 "    <thead>\n" +
