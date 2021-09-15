@@ -5,11 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import dev.keqing.urbansensor.utils.AvatarURLConverter;
+import dev.keqing.urbansensor.utils.FileType;
 import dev.keqing.urbansensor.utils.ToLowerCaseConverter;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -48,7 +50,7 @@ public class User {
     private String googleId;
 
     @JsonSerialize(converter = AvatarURLConverter.class)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String avatar;
 
     @OneToMany(mappedBy = "user")
@@ -70,6 +72,9 @@ public class User {
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @Transient
     private String token;
+
+    @Transient
+    private Thumbnails thumbnails;
 
 
     public String getId() {
@@ -150,6 +155,10 @@ public class User {
 
     public void setPlan(Plan plan) {
         this.plan = plan;
+    }
+
+    public Thumbnails getThumbnails() {
+        return new Thumbnails(avatar, FileType.AVATAR);
     }
 
     public static class Login {

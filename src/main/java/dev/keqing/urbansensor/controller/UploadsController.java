@@ -4,17 +4,16 @@ import dev.keqing.urbansensor.exception.CustomException;
 import dev.keqing.urbansensor.service.FileStorageService;
 import dev.keqing.urbansensor.utils.FileType;
 import io.swagger.v3.oas.annotations.Hidden;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 @Hidden
@@ -48,9 +47,36 @@ public class UploadsController {
             throw new CustomException(HttpStatus.BAD_REQUEST, "No se pudo determinar el tipo de archivo");
         }
 
-        if(contentType == null)
+        if (contentType == null)
             contentType = "application/octet-stream";
 
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).body(resource);
     }
+
+    @GetMapping("/thumbnail/{type}/{filename}")
+    ResponseEntity<byte[]> loadFileThumbnail(@PathVariable String filename, @PathVariable FileType type, @RequestParam String width) throws IOException, CustomException {
+
+        byte[] imageInByte = createThumbnail(Integer.parseInt(width), filename, type);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(imageInByte);
+    }
+
+
+    private byte[] createThumbnail(Integer width, String fileName, FileType fileType) throws IOException, CustomException {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        Thumbnails.of(fileStorageService.loadFileAsResource(fileName, fileType).getInputStream())
+                .size(width, width)
+                .outputFormat("jpg")
+                .toOutputStream(baos);
+
+        byte[] imageInByte = baos.toByteArray();
+
+        return imageInByte;
+    }
+
+
 }
