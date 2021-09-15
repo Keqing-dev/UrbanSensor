@@ -32,7 +32,7 @@ public class FileStorageService {
             Files.createDirectories(this.avatarLocation);
             Files.createDirectories(this.fileLocation);
         } catch (IOException ex) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not create the directories", ex);
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -64,7 +64,7 @@ public class FileStorageService {
 
             return filename;
         } catch (IOException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "No se pudo almacenar el archivo " + file.getOriginalFilename() + ". Por favor intenta nuevamente");
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -78,7 +78,7 @@ public class FileStorageService {
 
             return filename;
         } catch (IOException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "No se pudo almacenar el archivo " + file.getOriginalFilename() + ". Por favor intenta nuevamente");
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -89,7 +89,7 @@ public class FileStorageService {
 
             Files.delete(targetLocation);
         } catch (IOException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "No se pudo eliminar el archivo " + filename + ". Por favor intenta nuevamente");
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

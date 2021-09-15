@@ -44,7 +44,7 @@ public class UploadsController {
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException e) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "No se pudo determinar el tipo de archivo");
+            throw new CustomException(HttpStatus.BAD_REQUEST);
         }
 
         if (contentType == null)
@@ -73,9 +73,7 @@ public class UploadsController {
                 .outputFormat("jpg")
                 .toOutputStream(baos);
 
-        byte[] imageInByte = baos.toByteArray();
-
-        return imageInByte;
+        return baos.toByteArray();
     }
 
 

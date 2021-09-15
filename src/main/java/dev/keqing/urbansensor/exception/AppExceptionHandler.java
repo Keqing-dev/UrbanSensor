@@ -10,18 +10,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class AppExceptionHandler {
     @ExceptionHandler
-    ResponseEntity<CommonResponse> handleException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CommonResponse(false,
-                ex.getMessage()));
+    ResponseEntity<?> handleException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @ExceptionHandler(value = {UsernameNotFoundException.class})
-    ResponseEntity<CommonResponse> handleUsernameNotFoundException(UsernameNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CommonResponse(false, ex.getMessage()));
+    ResponseEntity<?> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     @ExceptionHandler(value = {CustomException.class})
-    ResponseEntity<CommonResponse> handleCustomException(CustomException ex) {
-        return ResponseEntity.status(ex.getCode()).body(new CommonResponse(false, ex.getMessage()));
+    ResponseEntity<?> handleCustomException(CustomException ex) {
+        return ResponseEntity.status(ex.getCode()).body(null);
     }
 }

@@ -17,12 +17,12 @@ public class Validations {
     private UserRepository userRepository;
 
     public User validateUser(HttpServletRequest request) throws CustomException {
-        return userRepository.findById(request.getRemoteUser()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Usuario no encontrado."));
+        return userRepository.findById(request.getRemoteUser()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND));
     }
 
     public void validateUserProject(User user, UserProject userProject) throws CustomException {
         if (!user.getId().equals(userProject.getUser().getId())) {
-            throw new CustomException(HttpStatus.FORBIDDEN, "Usuario no autorizado.");
+            throw new CustomException(HttpStatus.FORBIDDEN);
         }
     }
 

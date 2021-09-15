@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class CustomErrorController implements ErrorController {
     @RequestMapping("/error")
-    public ResponseEntity<CommonResponse> error(HttpServletRequest request) {
+    public ResponseEntity<?> error(HttpServletRequest request) {
         int code = (int) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         String message;
 
@@ -39,6 +39,6 @@ public class CustomErrorController implements ErrorController {
                 message = "An error occurred";
         }
 
-        return ResponseEntity.status(code).body(new CommonResponse(false, message));
+        return ResponseEntity.status(code).body(null);
     }
 }

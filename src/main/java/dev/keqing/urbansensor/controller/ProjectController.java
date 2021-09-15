@@ -81,13 +81,12 @@ public class ProjectController {
     @Operation(summary = "Actualización de proyecto", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Actualización Exitosa", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ProjectResponse.ProjectData.class))}),
-            @ApiResponse(responseCode = "404", description = "Proyecto no Encontrado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
     public ResponseEntity<CommonResponse> updateProject(@RequestBody Project.Update project, HttpServletRequest request) throws CustomException {
 
         User user = validations.validateUser(request);
-        Project updateProject = projectRepository.findById(project.getId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Proyecto no encontrado."));
-        UserProject userProject = userProjectRepository.findByProject_Id(updateProject.getId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Proyecto no encontrado."));
+        Project updateProject = projectRepository.findById(project.getId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND));
+        UserProject userProject = userProjectRepository.findByProject_Id(updateProject.getId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND));
 
         validations.validateUserProject(user, userProject);
 
@@ -102,12 +101,11 @@ public class ProjectController {
     @Operation(summary = "Eliminación de proyecto", description = "Elimina el proyecto y todos los reportes que contiene", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Eliminación Exitosa", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
-            @ApiResponse(responseCode = "404", description = "Proyecto no Encontrado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
     public ResponseEntity<CommonResponse> deleteProject(@RequestParam String projectId, HttpServletRequest request) throws CustomException {
 
         User user = validations.validateUser(request);
-        UserProject userProject = userProjectRepository.findByProject_Id(projectId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Proyecto no encontrado."));
+        UserProject userProject = userProjectRepository.findByProject_Id(projectId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND));
 
         validations.validateUserProject(user, userProject);
 
@@ -132,7 +130,6 @@ public class ProjectController {
             security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de Proyectos", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ProjectResponse.ProjectContent.class))}),
-            @ApiResponse(responseCode = "404", description = "Proyectos no Encontrados", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
     public ResponseEntity<CommonResponse> getMyAllProject(HttpServletRequest request,
                                                           @RequestParam int page,
@@ -153,7 +150,6 @@ public class ProjectController {
     @Operation(summary = "Lista de proyectos", description = "Trae todos los proyectos de un usuario, ordenados por la fecha de creación en forma descendente", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de Proyectos", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ProjectResponse.ProjectContent.class))}),
-            @ApiResponse(responseCode = "404", description = "Proyectos no Encontrados", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
     public ResponseEntity<CommonResponse> getAllProjectByUser(@RequestParam String userId,
                                                                @RequestParam int page,
@@ -174,7 +170,6 @@ public class ProjectController {
     @Operation(summary = "Últimos proyectos", description = "Trae los últimos tres proyectos de un usuario, ordenados por la fecha de creación en forma descendente", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de Proyectos", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ProjectResponse.ProjectContent.class))}),
-            @ApiResponse(responseCode = "404", description = "Proyectos no Encontrados", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
     public ResponseEntity<CommonResponse.Content> getLatest(HttpServletRequest request) throws CustomException {
 
@@ -191,7 +186,6 @@ public class ProjectController {
     @Operation(summary = "Buscar Mis proyectos", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Resultado de Búsqueda", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ProjectResponse.ProjectContent.class))}),
-            @ApiResponse(responseCode = "404", description = "Búsqueda sin Resultados", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
     public ResponseEntity<CommonResponse> searchProjectByUser(@RequestParam String search, @RequestParam int page, HttpServletRequest request) throws CustomException {
 
@@ -208,6 +202,3 @@ public class ProjectController {
     }
 
 }
-
-
-

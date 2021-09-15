@@ -38,7 +38,8 @@ public class PlanController {
     @Operation(summary = "Creación de plan", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Plan Creado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
-            @ApiResponse(responseCode = "400", description = "Nombre Inválido", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
+            @ApiResponse(responseCode = "400", description = "Nombre Inválido", content = {@Content(schema = @Schema())}),
+
     })
     public ResponseEntity<CommonResponse> createPlan(@RequestBody Plan.Create plan, HttpServletRequest request) throws CustomException {
 
@@ -60,14 +61,13 @@ public class PlanController {
     @Operation(summary = "Lista de planes")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de Planes", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PlanResponse.PlanData.class))}),
-            @ApiResponse(responseCode = "404", description = "Planes no Encontrados", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
     public ResponseEntity<CommonResponse> getAll() throws CustomException {
 
         List<Plan> planList = planRepository.findAll();
 
         if (planList.isEmpty())
-            throw new CustomException(HttpStatus.NOT_FOUND, "No existen planes actualmente");
+            throw new CustomException(HttpStatus.NOT_FOUND);
 
         return ResponseEntity.ok(new CommonResponse(true, planList));
     }
@@ -76,7 +76,6 @@ public class PlanController {
     @Operation(summary = "Eliminar pan", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Plan Eliminado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
-            @ApiResponse(responseCode = "404", description = "Plan no Encontrado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
     public ResponseEntity<CommonResponse> deletePlan(@RequestParam String planId) throws CustomException {
 

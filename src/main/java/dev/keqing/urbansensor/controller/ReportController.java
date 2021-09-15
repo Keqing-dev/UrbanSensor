@@ -61,7 +61,6 @@ public class ReportController {
     @Operation(summary = "Creación de reporte", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Proyecto Creado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
-            @ApiResponse(responseCode = "404", description = "Proyecto no Encontrado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
     ResponseEntity<CommonResponse> createReport(
             @RequestPart MultipartFile file,
@@ -73,7 +72,7 @@ public class ReportController {
             @RequestPart String projectId,
             HttpServletRequest request
     ) throws CustomException {
-        Project project = projectRepository.findById(projectId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Proyecto no encontrado"));
+        Project project = projectRepository.findById(projectId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND));
 
         User user = validations.validateUser(request);
 
@@ -99,7 +98,6 @@ public class ReportController {
     @Operation(summary = "Mis reportes", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de Reportes", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReportResponse.ReportContent.class))}),
-            @ApiResponse(responseCode = "404", description = "Reportes no Encontrados", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
     ResponseEntity<CommonResponse> getReportsByUser(@RequestParam(name = "page") int page,
                                           @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
@@ -126,13 +124,12 @@ public class ReportController {
         return ResponseEntity.ok(new CommonResponse(true, reports.getContent(), paginated));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/details")
     @Operation(summary = "Obtención de reporte", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Datos de Reporte", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReportResponse.ReportData.class))}),
-            @ApiResponse(responseCode = "404", description = "Reporte no Encontrado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
-    ResponseEntity<CommonResponse> get(@PathVariable String id, HttpServletRequest request) throws CustomException {
+    ResponseEntity<CommonResponse> get(@RequestParam String id, HttpServletRequest request) throws CustomException {
         User user = validations.validateUser(request);
 
         ReportSummary report = reportRepository.findByIdAndUser(id, user, ReportSummary.class).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND));
@@ -144,7 +141,6 @@ public class ReportController {
     @Operation(summary = "Reportes de un proyecto", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Datos de Reporte", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReportResponse.ReportContent.class))}),
-            @ApiResponse(responseCode = "404", description = "Reportes no Encontrados", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
     ResponseEntity<CommonResponse> getReportsByProject(@RequestParam String id, @RequestParam int page) throws CustomException {
 
@@ -159,13 +155,12 @@ public class ReportController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     @Operation(summary = "Eliminar reporte", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Reporte Eliminado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
-            @ApiResponse(responseCode = "404", description = "Reporte no Encontrado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
     })
-    ResponseEntity<CommonResponse> deleteReport(@PathVariable String id, HttpServletRequest request) throws CustomException {
+    ResponseEntity<CommonResponse> deleteReport(@RequestParam String id, HttpServletRequest request) throws CustomException {
 
         validations.validateUser(request);
 
@@ -176,8 +171,5 @@ public class ReportController {
         reportRepository.delete(report);
 
         return ResponseEntity.ok(new CommonResponse(true, "Reporte eliminado exitosamente."));
-
     }
-
-
 }

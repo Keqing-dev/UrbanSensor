@@ -8,6 +8,7 @@ import dev.keqing.urbansensor.entity.Plan;
 import dev.keqing.urbansensor.entity.User;
 import dev.keqing.urbansensor.exception.CustomException;
 import dev.keqing.urbansensor.response.CommonResponse;
+import dev.keqing.urbansensor.response.ReportResponse;
 import dev.keqing.urbansensor.service.FileStorageService;
 import dev.keqing.urbansensor.utils.FileType;
 import dev.keqing.urbansensor.utils.RSAKeys;
@@ -58,32 +59,42 @@ public class AuthController {
     @PostMapping(value = "/login")
     @Operation(summary = "Autenticación")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Login Exitoso", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}),
-            @ApiResponse(responseCode = "400", description = "Datos Inválidos", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
+            @ApiResponse(responseCode = "200", description = "Login Exitoso", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = User.Token.class))}),
+            @ApiResponse(responseCode = "400", description = "Datos Inválidos", content = {@Content(schema = @Schema())}),
+
     })
     ResponseEntity<CommonResponse> login(@RequestBody User.Login user) throws CustomException, IOException {
 
         String email = user.getEmail();
         String password = user.getPassword();
 
+        System.out.println("a");
+
         if (password == null || email == null) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "Datos Inválidos, Intenta Nuevamente");
         }
 
-        User userExists =
-                userRepository.findFirstByEmail(email).orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Datos Inválidos, Intenta Nuevamente"));
+        System.out.println("b");
+
+        User userExists = userRepository.findFirstByEmail(email).orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST));
+
+        System.out.println("c");
 
         String passwordEncoded = userExists.getPassword();
 
         if (!bCryptPasswordEncoder.matches(password, passwordEncoded)) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "Datos Inválidos, Intenta Nuevamente");
+            throw new CustomException(HttpStatus.BAD_REQUEST);
         }
+
+        System.out.println("d");
 
         Algorithm algorithm = RSAKeys.getAlgorithm();
 
+        System.out.println("F?");
         String token = JWT.create().withSubject(userExists.getId()).withIssuedAt(new Date()).sign(algorithm);
-
+        System.out.println("F??");
         userExists.setToken(token);
+        System.out.println("F");
 
         return ResponseEntity.ok(new CommonResponse(true, userExists));
     }
@@ -93,7 +104,7 @@ public class AuthController {
     @Operation(summary = "Subir/Actualizar Avatar", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Subida Exitosa", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}),
-            @ApiResponse(responseCode = "400", description = "Datos Inválidos", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
+            @ApiResponse(responseCode = "400", description = "Datos Inválidos", content = {@Content(schema = @Schema())}),
     })
     ResponseEntity<CommonResponse> uploadAvatar(@RequestPart MultipartFile file, HttpServletRequest request) throws CustomException {
 
@@ -112,15 +123,14 @@ public class AuthController {
     @Operation(summary = "Creación de usuario")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Registro Exitoso", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
-            @ApiResponse(responseCode = "400", description = "Email Duplicado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
-            @ApiResponse(responseCode = "404", description = "Plan no Encontrado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CommonResponse.Message.class))}),
+            @ApiResponse(responseCode = "400", description = "Email Duplicado", content = {@Content(schema = @Schema())}),
     })
     ResponseEntity<CommonResponse> createUser(@RequestBody User.Register user) throws CustomException {
 
         Optional<User> userExists = userRepository.findFirstByEmail(user.getEmail());
-        Plan plan = planRepository.findById(user.getPlanId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "El plan seleccionado no existe."));
+        Plan plan = planRepository.findById(user.getPlanId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND));
         if (userExists.isPresent())
-            throw new CustomException(HttpStatus.BAD_REQUEST, "Ya existe un usuario con este email");
+            throw new CustomException(HttpStatus.BAD_REQUEST);
 
         String hash = bCryptPasswordEncoder.encode(user.getPassword());
 
@@ -137,5 +147,27 @@ public class AuthController {
         userRepository.save(newUser);
 
         return ResponseEntity.ok(new CommonResponse(true, "Usuario Creado Exitosamente"));
+    }
+
+    @GetMapping
+    @Operation(summary = "Mis datos", security = @SecurityRequirement(name = "bearer"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Datos de Usuario", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}),
+    })
+    ResponseEntity<CommonResponse> getMyData(HttpServletRequest request) throws CustomException {
+        User user = validations.validateUser(request);
+
+        return ResponseEntity.ok(new CommonResponse(true, user));
+    }
+
+    @GetMapping("/user")
+    @Operation(summary = "Obtención de los datos de un usuario", security = @SecurityRequirement(name = "bearer"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Datos de Usuario", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}),
+    })
+    ResponseEntity<CommonResponse> getUserData(@RequestParam String id) throws CustomException {
+        User user = userRepository.findById(id).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND));
+
+        return ResponseEntity.ok(new CommonResponse(true, user));
     }
 }
