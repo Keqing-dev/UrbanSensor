@@ -3,14 +3,14 @@ package dev.keqing.urbansensor.projection;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import dev.keqing.urbansensor.utils.FileURLConverter;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public interface ReportSummary {
     String getId();
     String getLatitude();
     String getLongitude();
     String getAddress();
-    LocalDateTime getTimestamp();
+    Date getTimestamp();
     String getCategories();
     @JsonSerialize(converter = FileURLConverter.class)
     String getFile();

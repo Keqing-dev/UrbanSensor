@@ -8,7 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "report")
@@ -32,7 +32,7 @@ public class Report {
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @CreationTimestamp
     @Column(nullable = false)
-    private LocalDateTime timestamp;
+    private Date timestamp;
 
     @Column(nullable = false)
     private String categories;
@@ -84,7 +84,7 @@ public class Report {
         this.address = address;
     }
 
-    public LocalDateTime getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
