@@ -23,8 +23,8 @@ public class Thumbnails {
     int xxlW = 1300;
 
 
-
     public Thumbnails(String filename, FileType fileType) {
+        if (filename == null) return;
         if (filename.contains("https://")) {
             this.xs = filename;
             this.sm = filename;
@@ -33,11 +33,11 @@ public class Thumbnails {
             this.xl = filename;
             this.xxl = filename;
         } else {
-            this.xs = "https://urban.keqing.dev/" + "uploads/thumbnail/" + fileType + "/" + filename + "?width=" + xsW ;
-            this.sm = "https://urban.keqing.dev/" + "uploads/thumbnail/" + fileType + "/" + filename + "?width=" + smW ;
-            this.md = "https://urban.keqing.dev/" + "uploads/thumbnail/" + fileType + "/" + filename + "?width=" + mdW ;
-            this.lg = "https://urban.keqing.dev/" + "uploads/thumbnail/" + fileType + "/" + filename + "?width=" + lgW ;
-            this.xl = "https://urban.keqing.dev/" + "uploads/thumbnail/" + fileType + "/" + filename + "?width=" + xlW ;
+            this.xs = "https://urban.keqing.dev/" + "uploads/thumbnail/" + fileType + "/" + filename + "?width=" + xsW;
+            this.sm = "https://urban.keqing.dev/" + "uploads/thumbnail/" + fileType + "/" + filename + "?width=" + smW;
+            this.md = "https://urban.keqing.dev/" + "uploads/thumbnail/" + fileType + "/" + filename + "?width=" + mdW;
+            this.lg = "https://urban.keqing.dev/" + "uploads/thumbnail/" + fileType + "/" + filename + "?width=" + lgW;
+            this.xl = "https://urban.keqing.dev/" + "uploads/thumbnail/" + fileType + "/" + filename + "?width=" + xlW;
             this.xxl = "https://urban.keqing.dev/" + "uploads/thumbnail/" + fileType + "/" + filename + "?width=" + xxlW;
         }
     }
