@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("UrbanSensor")
-                        .description("<div class='chOOHy'>\n" +
-                                "    <h1>Common Status Codes</h1>\n" +
+                        .description("<div id='section/Common-Status-Codes' data-section-id='section/Common-Status-Codes' class='sc-eCApnc'>\n" +
+                                "    <h1 class='chOOHy'><a class='sc-crzoAE DykGo' href='#section/Common-Status-Codes' aria-label='section/Common-Status-Codes'></a>Common Status Codes</h1>\n" +
                                 "    <table>\n" +
                                 "        <thead>\n" +
                                 "        <tr>\n" +
