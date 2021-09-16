@@ -26,4 +26,6 @@ public interface ReportRepository extends JpaRepository<Report,String> {
     void deleteAllByProject_Id(String projectId);
 
     void deleteReportsByProject_Id(String projectId);
+
+
 }

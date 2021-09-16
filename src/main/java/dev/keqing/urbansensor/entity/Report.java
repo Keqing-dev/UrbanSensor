@@ -52,6 +52,15 @@ public class Report {
     @JoinColumn(name = "users_id")
     private User user;
 
+    /** --- TRANSIENTS  --- **/
+
+    @Transient
+    private String projectId;
+
+    @Transient
+    private String projectName;
+
+
     public String getId() {
         return id;
     }
@@ -128,4 +137,11 @@ public class Report {
         this.user = user;
     }
 
+    public String getProjectId() {
+        return project.getId();
+    }
+
+    public String getProjectName() {
+        return  project.getName();
+    }
 }
