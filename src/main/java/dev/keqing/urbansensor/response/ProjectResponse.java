@@ -28,11 +28,21 @@ public class ProjectResponse {
     public static class ProjectContent extends StatusResponse {
         private List<Project> content;
         private Paging paging;
+        private Long maxItems;
+
 
         public ProjectContent(boolean success, List<Project> content, Paging paging) {
             super(success);
             this.content = content;
             this.paging = paging;
+        }
+
+        public ProjectContent(boolean success, List<Project> content, Paging paging, Long maxItems) {
+            super(success);
+            this.content = content;
+            this.paging = paging;
+            this.maxItems = maxItems;
+
         }
 
         public List<Project> getContent() {
@@ -49,6 +59,14 @@ public class ProjectResponse {
 
         public void setPaging(Paging paging) {
             this.paging = paging;
+        }
+
+        public Long getMaxItems() {
+            return maxItems;
+        }
+
+        public void setMaxItems(Long maxItems) {
+            this.maxItems = maxItems;
         }
     }
 }
