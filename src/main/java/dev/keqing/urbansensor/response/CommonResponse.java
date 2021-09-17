@@ -15,6 +15,9 @@ public class CommonResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Paging paging;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long maxItems;
+
     public CommonResponse(boolean success, String message) {
         this.success = success;
         this.message = message;
@@ -29,6 +32,21 @@ public class CommonResponse {
         this.success = success;
         this.content = content;
         this.paging = paging;
+    }
+
+    public CommonResponse(boolean success, Object content, Paging paging, Long maxItems) {
+        this.success = success;
+        this.content = content;
+        this.paging = paging;
+        this.maxItems = maxItems;
+    }
+
+    public Long getMaxItems() {
+        return maxItems;
+    }
+
+    public void setMaxItems(Long maxItems) {
+        this.maxItems = maxItems;
     }
 
     public boolean isSuccess() {

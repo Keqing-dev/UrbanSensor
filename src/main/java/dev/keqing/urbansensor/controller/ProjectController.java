@@ -143,7 +143,7 @@ public class ProjectController {
         }
         Paging paginated = paging.toPagination(projectList, page, "project");
 
-        return ResponseEntity.ok(new CommonResponse(true, projectList.getContent(), paginated));
+        return ResponseEntity.ok(new CommonResponse(true, projectList.getContent(), paginated, projectList.getTotalElements()));
     }
 
     @GetMapping(value = "/user")
@@ -152,8 +152,8 @@ public class ProjectController {
             @ApiResponse(responseCode = "200", description = "Lista de Proyectos", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ProjectResponse.ProjectContent.class))}),
     })
     public ResponseEntity<CommonResponse> getAllProjectByUser(@RequestParam String userId,
-                                                               @RequestParam int page,
-                                                               @RequestParam(name = "limit", required = false, defaultValue = "10") int limit) throws CustomException {
+                                                              @RequestParam int page,
+                                                              @RequestParam(name = "limit", required = false, defaultValue = "10") int limit) throws CustomException {
         Pageable pageable = PageRequest.of(generalConfig.initPage(page), generalConfig.limitPage(limit));
 
         Page<Project> projectList = projectRepository.findAllProjectByUser_IdAndCountTheirReports(userId, pageable);
@@ -182,6 +182,7 @@ public class ProjectController {
         return ResponseEntity.ok(new CommonResponse.Content(true, projectList.getContent()));
     }
 
+
     @GetMapping(value = "/search")
     @Operation(summary = "Buscar Mis proyectos", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
@@ -194,11 +195,11 @@ public class ProjectController {
         Pageable pageable = generalConfig.pageable(page, 10);
         Page<Project> userProjects = projectRepository.searchAllProjectByUserAndCountTheirReports(user.getId(), search, pageable);
 
-        if(userProjects.isEmpty())
+        if (userProjects.isEmpty())
             throw new CustomException(HttpStatus.NOT_FOUND);
 
         Paging paginated = paging.toPagination(userProjects, page, "project/search");
-        return ResponseEntity.ok(new CommonResponse(true, userProjects.getContent(), paginated));
+        return ResponseEntity.ok(new CommonResponse(true, userProjects.getContent(), paginated, userProjects.getTotalElements()));
     }
 
 }
