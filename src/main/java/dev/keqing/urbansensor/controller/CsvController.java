@@ -32,7 +32,7 @@ public class CsvController {
 
     @GetMapping("/reports")
     @Operation(summary = "Exportar mis reportes", description = "Genera un reporte con extension .csv delimitado por coma (,), con un tamaño por pagina de 1M, el limite por pagina se puede cambiar por parámetro.", security = @SecurityRequirement(name = "bearer"))
-    public void reportsToCsv(HttpServletResponse response, @RequestParam String projectId,@RequestParam(defaultValue = "1") int page ,@RequestParam(defaultValue = "1000000") int limit) throws IOException, CustomException {
+    public void reportsToCsv(HttpServletResponse response, @RequestParam String projectId,@RequestParam(defaultValue = "1") int page ,@RequestParam(defaultValue = "1000000") int limit) throws IOException {
 
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         String currentDateTime = dateFormatter.format(new Date());
@@ -41,7 +41,7 @@ public class CsvController {
         response.setContentType("text/csv");
         response.setHeader(headerKey, headerValue);
 
-        Pageable pageable = PageRequest.of(page, limit);
+        Pageable pageable = PageRequest.of(page - 1, limit);
 
         Page<Report> listUsers = reportRepository.findAllByProject_IdOrderByTimestampDesc(projectId, pageable, Report.class);
 

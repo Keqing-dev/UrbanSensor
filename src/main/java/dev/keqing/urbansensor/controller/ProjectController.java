@@ -143,7 +143,9 @@ public class ProjectController {
         }
         Paging paginated = paging.toPagination(projectList, page, "project");
 
-        return ResponseEntity.ok(new CommonResponse(true, projectList.getContent(), paginated, projectList.getTotalElements()));
+        paginated.setMaxItems(projectList.getTotalElements());
+
+        return ResponseEntity.ok(new CommonResponse(true, projectList.getContent(), paginated));
     }
 
     @GetMapping(value = "/user")
@@ -199,7 +201,8 @@ public class ProjectController {
             throw new CustomException(HttpStatus.NOT_FOUND);
 
         Paging paginated = paging.toPagination(userProjects, page, "project/search");
-        return ResponseEntity.ok(new CommonResponse(true, userProjects.getContent(), paginated, userProjects.getTotalElements()));
+        paginated.setMaxItems(userProjects.getTotalElements());
+        return ResponseEntity.ok(new CommonResponse(true, userProjects.getContent(), paginated));
     }
 
 }

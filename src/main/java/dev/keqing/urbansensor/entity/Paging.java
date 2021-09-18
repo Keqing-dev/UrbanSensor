@@ -19,12 +19,11 @@ public class Paging {
     private String previous;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String next;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long maxItems;
 
-    public Paging toPagination(Page reports, int page, String type) {
-        Paging paginated = null;
-
-        if (reports.hasPrevious() || reports.hasNext())
-            paginated = paging;
+    public Paging toPagination(Page<?> reports, int page, String type) {
+        Paging paginated = paging;
 
         if (reports.hasNext() && paginated != null)
             paginated.setNext(type + "?page=" + (page + 1));
@@ -51,4 +50,11 @@ public class Paging {
         this.next = generalConfig.getDomainName() + next;
     }
 
+    public Long getMaxItems() {
+        return maxItems;
+    }
+
+    public void setMaxItems(Long maxItems) {
+        this.maxItems = maxItems;
+    }
 }
