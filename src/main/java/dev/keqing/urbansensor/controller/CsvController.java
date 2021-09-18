@@ -45,7 +45,6 @@ public class CsvController {
 
         Page<Report> listUsers = reportRepository.findAllByProject_IdOrderByTimestampDesc(projectId, pageable, Report.class);
 
-        System.out.println(listUsers.getContent().get(0).getId());
         String[] csvHeader = {"Report id", "Latitude", "Longitude", "Address", "Categories", "Observations", "Report File", "Project Id", "Project Name", "CreationAt"};
         String[] nameMapping = {"id", "latitude", "longitude", "address", "categories", "observations", "file", "projectId", "projectName", "timestamp"};
 
