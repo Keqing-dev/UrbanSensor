@@ -9,6 +9,7 @@ import dev.keqing.urbansensor.entity.User;
 import dev.keqing.urbansensor.exception.CustomException;
 import dev.keqing.urbansensor.response.CommonResponse;
 import dev.keqing.urbansensor.response.ReportResponse;
+import dev.keqing.urbansensor.response.UserResponse;
 import dev.keqing.urbansensor.service.FileStorageService;
 import dev.keqing.urbansensor.utils.FileType;
 import dev.keqing.urbansensor.utils.RSAKeys;
@@ -142,7 +143,7 @@ public class AuthController {
     @GetMapping
     @Operation(summary = "Mis datos", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Datos de Usuario", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}),
+            @ApiResponse(responseCode = "200", description = "Datos de Usuario", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.UserData.class))}),
     })
     ResponseEntity<CommonResponse> getMyData(HttpServletRequest request) throws CustomException {
         User user = validations.validateUser(request);
@@ -153,7 +154,7 @@ public class AuthController {
     @GetMapping("/user")
     @Operation(summary = "Obtención de los datos de un usuario", security = @SecurityRequirement(name = "bearer"))
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Datos de Usuario", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = User.class))}),
+            @ApiResponse(responseCode = "200", description = "Datos de Usuario", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.UserData.class))}),
     })
     ResponseEntity<CommonResponse> getUserData(@RequestParam String id) throws CustomException {
         User user = userRepository.findById(id).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND));
