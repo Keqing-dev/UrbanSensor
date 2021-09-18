@@ -24,6 +24,12 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build -x test
+      
+  deploy:
+  
+    runs-on: ubuntu-latest
+    
+    steps:
     - name: Deploy to Server
       uses: appleboy/ssh-action@master
       with:
