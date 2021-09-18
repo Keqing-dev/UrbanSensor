@@ -2,14 +2,12 @@ name: CI/CD
 
 on:
   push:
-    branches:
-      - main
     tags:
       - v*
 
 jobs:
   build:
-
+    
     runs-on: ubuntu-latest
 
     steps:
@@ -41,4 +39,7 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           cd ${{ secrets.PROJECT_PATH }}
+          pm2 stop ${{ secrets.PROJECT_CONTAINER }}
           git pull
+          ./gradlew build
+          pm2 start ${{ secrets.PROJECT_CONTAINER }}
