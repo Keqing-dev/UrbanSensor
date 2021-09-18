@@ -34,9 +34,9 @@ jobs:
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
+        port: ${{ secrets.PORT }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.PORT }}
         script: |
           cd ${{ secrets.PROJECT_PATH }}
           pm2 stop ${{ secrets.PROJECT_CONTAINER }}
