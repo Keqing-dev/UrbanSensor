@@ -14,6 +14,7 @@ public interface ReportSummary {
     String getCategories();
     @JsonSerialize(converter = FileURLConverter.class)
     String getFile();
+    String getObservations();
     UserSummary getUser();
 
     interface UserSummary {
