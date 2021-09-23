@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,15 @@ public interface ReportRepository extends JpaRepository<Report,String> {
     List<ReportFile> findAllByProject_Id(String projectId);
 
     <T> Page<T> findAllByProject_IdOrderByTimestampDesc(String projectId,Pageable pageable, Class<T> type);
+
+
+
+//    <T> Page<T> findAllByProject_IdOrderByTimestampDesc(String projectId,Pageable pageable, Class<T> type);
+
+    <T> List<T> findAllByProject_IdAndTimestampBetweenOrderByTimestampDesc(String projectId, LocalDateTime inDate, LocalDateTime endDate, Class<T> type);
+
+
+
 
     @Transactional
     void deleteAllByProject_Id(String projectId);
