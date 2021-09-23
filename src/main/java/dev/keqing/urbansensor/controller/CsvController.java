@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 
 @RestController
 @Tag(name = "Csv")
@@ -32,7 +34,7 @@ public class CsvController {
 
     @GetMapping("/reports")
     @Operation(summary = "Exportar mis reportes", description = "Genera un reporte con extension .csv delimitado por coma (,), con un tamaño por pagina de 1M, el limite por pagina se puede cambiar por parámetro.", security = @SecurityRequirement(name = "bearer"))
-    public void reportsToCsv(HttpServletResponse response, @RequestParam String projectId,@RequestParam(defaultValue = "1") int page ,@RequestParam(defaultValue = "1000000") int limit) throws IOException {
+    public void reportsToCsv(HttpServletResponse response, @RequestParam String projectId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "1000000") int limit) throws IOException {
 
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         String currentDateTime = dateFormatter.format(new Date());
@@ -43,7 +45,7 @@ public class CsvController {
 
         Pageable pageable = PageRequest.of(page - 1, limit);
 
-        Page<Report> listUsers = reportRepository.findAllByProject_IdOrderByTimestampDesc(projectId, pageable, Report.class);
+        Page<Report> reports = reportRepository.findAllByProject_IdOrderByTimestampDesc(projectId, pageable, Report.class);
 
         String[] csvHeader = {"Report id", "Latitude", "Longitude", "Address", "Categories", "Observations", "Report File", "Project Id", "Project Name", "CreationAt"};
         String[] nameMapping = {"id", "latitude", "longitude", "address", "categories", "observations", "file", "projectId", "projectName", "timestamp"};
@@ -52,12 +54,42 @@ public class CsvController {
 
         csvWriter.writeHeader(csvHeader);
 
-        for (Report report : listUsers.getContent()) {
+        for (Report report : reports.getContent()) {
             csvWriter.write(report, nameMapping);
         }
 
         csvWriter.close();
 
     }
+
+    @GetMapping("/report")
+    @Operation(summary = "Exportar un reporte", description = "Genera un reporte con extension .csv delimitado por coma (,)", security = @SecurityRequirement(name = "bearer"))
+    public void reportsToCsv(HttpServletResponse response, @RequestParam String reportId) throws IOException, CustomException {
+
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=reports_" + currentDateTime + ".csv";
+        response.setContentType("text/csv");
+        response.setHeader(headerKey, headerValue);
+
+        Optional<Report> report = reportRepository.findById(reportId);
+
+
+        if (report.isEmpty()) {
+            throw new CustomException(HttpStatus.NOT_FOUND);
+        }
+
+        String[] csvHeader = {"Report id", "Latitude", "Longitude", "Address", "Categories", "Observations", "Report File", "Project Id", "Project Name", "CreationAt"};
+        String[] nameMapping = {"id", "latitude", "longitude", "address", "categories", "observations", "file", "projectId", "projectName", "timestamp"};
+
+        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+
+        csvWriter.writeHeader(csvHeader);
+        csvWriter.write(report.get(), nameMapping);
+        csvWriter.close();
+
+    }
+
 
 }

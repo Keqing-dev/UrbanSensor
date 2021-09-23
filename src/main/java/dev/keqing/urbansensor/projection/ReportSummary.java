@@ -14,11 +14,12 @@ public interface ReportSummary {
     String getCategories();
     @JsonSerialize(converter = FileURLConverter.class)
     String getFile();
-    UserSummary getUser();
+    String getObservations();
+  /*  UserSummary getUser();
 
     interface UserSummary {
         String getId();
         String getName();
         String getLastName();
-    }
+    }*/
 }

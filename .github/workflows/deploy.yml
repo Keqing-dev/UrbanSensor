@@ -1,0 +1,48 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+        cache: gradle
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Add mask
+      run: |
+        echo "::add-mask::${{ secrets.SECRET_VALUE_1 }}"
+        echo "::add-mask::${{ secrets.SECRET_VALUE_2 }}"
+    - name: Deploy to Server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          ${{ secrets.SCRIPT }}
+          cd ${{ secrets.PROJECT_PATH }}
+          pm2 stop ${{ secrets.PROJECT_CONTAINER }}
+          git pull
+          ./gradlew build
+          pm2 start ${{ secrets.PROJECT_CONTAINER }}

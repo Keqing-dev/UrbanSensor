@@ -4,7 +4,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @ConfigurationProperties(prefix = "config")
 @Component
@@ -21,7 +20,7 @@ public class GeneralConfig {
     }
 
     public int limitPage(int limit) {
-        return limit > 100 ? itemPerPage : limit;
+        return limit > 100000 ? itemPerPage : limit;
     }
 
     public Pageable pageable(int page, int limit) {

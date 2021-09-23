@@ -7,7 +7,6 @@ import dev.keqing.urbansensor.entity.*;
 import dev.keqing.urbansensor.exception.CustomException;
 import dev.keqing.urbansensor.projection.ReportSummary;
 import dev.keqing.urbansensor.response.CommonResponse;
-import dev.keqing.urbansensor.response.ProjectResponse;
 import dev.keqing.urbansensor.response.ReportResponse;
 import dev.keqing.urbansensor.service.FileStorageService;
 import dev.keqing.urbansensor.utils.FileType;
@@ -16,7 +15,6 @@ import dev.keqing.urbansensor.utils.Validations;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -33,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Tag(name = "Report")
@@ -100,9 +99,9 @@ public class ReportController {
             @ApiResponse(responseCode = "200", description = "Lista de Reportes", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReportResponse.ReportContent.class))}),
     })
     ResponseEntity<CommonResponse> getReportsByUser(@RequestParam(name = "page") int page,
-                                          @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
-                                          @RequestParam(name = "sortBy", required = false, defaultValue = "timestampDESC") String sortBy,
-                                          HttpServletRequest request) throws CustomException {
+                                                    @RequestParam(name = "limit", required = false, defaultValue = "10") int limit,
+                                                    @RequestParam(name = "sortBy", required = false, defaultValue = "timestampDESC") String sortBy,
+                                                    HttpServletRequest request) throws CustomException {
         final int itemPerPage = generalConfig.getItemPerPage();
         User user = validations.validateUser(request);
 
@@ -144,16 +143,33 @@ public class ReportController {
     })
     ResponseEntity<CommonResponse> getReportsByProject(@RequestParam String id, @RequestParam int page) throws CustomException {
 
-        Page<ReportSummary> reportSummaries = reportRepository.findAllByProject_IdOrderByTimestampDesc(id, generalConfig.pageable(page, 10), ReportSummary.class);
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        Page<ReportSummary> reportSummaries = reportRepository.findAllByProject_IdOrderByTimestampDesc(id, pageable, ReportSummary.class);
 
         if (reportSummaries.isEmpty())
             throw new CustomException(HttpStatus.NOT_FOUND);
 
-        Paging paging = new Paging().toPagination(reportSummaries, page, "/report/project");
+        Paging paging = new Paging().toPagination(reportSummaries, page - 1, "/report/project");
 
         return ResponseEntity.ok(new CommonResponse(true, reportSummaries.getContent(), paging));
     }
 
+    @GetMapping("/project/last")
+    @Operation(summary = "Reportes de un proyecto en los últimos 7 dias", security = @SecurityRequirement(name = "bearer"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Datos de Reporte", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReportResponse.ReportContent.class))}),
+    })
+    ResponseEntity<CommonResponse> getLastReportsByProject(@RequestParam String id) throws CustomException {
+
+        LocalDateTime localDate = LocalDateTime.now();
+
+        List<ReportSummary> reportSummaries = reportRepository.findAllByProject_IdAndTimestampBetweenOrderByTimestampDesc(id, localDate.minusDays(7), localDate, ReportSummary.class);
+
+        if (reportSummaries.isEmpty())
+            throw new CustomException(HttpStatus.NOT_FOUND);
+
+        return ResponseEntity.ok(new CommonResponse(true, reportSummaries,null));
+    }
 
     @DeleteMapping
     @Operation(summary = "Eliminar reporte", security = @SecurityRequirement(name = "bearer"))
