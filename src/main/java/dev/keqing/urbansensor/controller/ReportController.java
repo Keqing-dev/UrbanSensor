@@ -159,7 +159,7 @@ public class ReportController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Datos de Reporte", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReportResponse.ReportContent.class))}),
     })
-    ResponseEntity<CommonResponse> getReportsByProject(@RequestParam String id) throws CustomException {
+    ResponseEntity<CommonResponse> getLastReportsByProject(@RequestParam String id) throws CustomException {
 
         LocalDateTime localDate = LocalDateTime.now();
 
@@ -168,7 +168,7 @@ public class ReportController {
         if (reportSummaries.isEmpty())
             throw new CustomException(HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.ok(new CommonResponse(true, reportSummaries));
+        return ResponseEntity.ok(new CommonResponse(true, reportSummaries,null));
     }
 
     @DeleteMapping
