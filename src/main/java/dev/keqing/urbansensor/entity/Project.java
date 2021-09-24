@@ -6,8 +6,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "project")
@@ -74,8 +75,8 @@ public class Project {
         return createdAt;
     }
 
-    public Long getReportsCount() {
-        return reportsCount;
+    public String getReportsCount() {
+        return  NumberFormat.getNumberInstance(Locale.GERMAN).format(reportsCount);
     }
 
     public void setReportsCount(Long reportsCount) {
@@ -117,4 +118,5 @@ public class Project {
             this.name = name;
         }
     }
+
 }
