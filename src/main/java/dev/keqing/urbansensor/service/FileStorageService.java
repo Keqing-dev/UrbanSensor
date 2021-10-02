@@ -55,16 +55,16 @@ public class FileStorageService {
 
     public String storeFile(MultipartFile file, FileType type, String oldFilename) throws CustomException {
 
-        switch (type) {
-            case AVATAR:
-                if(!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) || !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE))
-                    throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg y .jpeg");
-                break;
-            case FILE:
-                if (!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) || !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE) || !Objects.equals(file.getContentType(), "video/mp4"))
-                    throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg y .jpeg");
-                break;
-        }
+//        switch (type) {
+//            case AVATAR:
+//                if(!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) || !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE))
+//                    throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg y .jpeg");
+//                break;
+//            case FILE:
+//                if (!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) || !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE) || !Objects.equals(file.getContentType(), "video/mp4"))
+//                    throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg y .jpeg");
+//                break;
+//        }
 
         String filename = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
 
