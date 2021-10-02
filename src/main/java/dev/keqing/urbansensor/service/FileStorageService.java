@@ -103,13 +103,13 @@ public class FileStorageService {
     }
 
 
-    public void deleteFile(String filename, FileType type) throws CustomException {
+    public void deleteFile(String filename, FileType type) {
         try {
             Path targetLocation = getTargetLocation(filename, type);
 
             Files.delete(targetLocation);
         } catch (IOException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
+//            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
