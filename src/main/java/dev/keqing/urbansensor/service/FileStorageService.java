@@ -54,6 +54,7 @@ public class FileStorageService {
     }
 
     public String storeFile(MultipartFile file, FileType type, String oldFilename) throws CustomException {
+        System.out.println(file.getContentType());
 
 //        switch (type) {
 //            case AVATAR:
