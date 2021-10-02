@@ -89,6 +89,7 @@ public class FileStorageService {
     }
 
     private void checkMimeType(MultipartFile file, FileType type) throws CustomException {
+        System.out.println(file.getContentType());
         switch (type) {
             case AVATAR:
                 if(!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) && !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE))
