@@ -54,18 +54,7 @@ public class FileStorageService {
     }
 
     public String storeFile(MultipartFile file, FileType type, String oldFilename) throws CustomException {
-        System.out.println(file.getContentType());
-
-//        switch (type) {
-//            case AVATAR:
-//                if(!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) || !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE))
-//                    throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg y .jpeg");
-//                break;
-//            case FILE:
-//                if (!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) || !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE) || !Objects.equals(file.getContentType(), "video/mp4"))
-//                    throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg y .jpeg");
-//                break;
-//        }
+        checkMimeType(file, type);
 
         String filename = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
 
@@ -84,6 +73,8 @@ public class FileStorageService {
     }
 
     public String storeFile(MultipartFile file, FileType type) throws CustomException {
+        checkMimeType(file, type);
+
         String filename = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
 
         try {
@@ -94,6 +85,19 @@ public class FileStorageService {
             return filename;
         } catch (IOException e) {
             throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void checkMimeType(MultipartFile file, FileType type) throws CustomException {
+        switch (type) {
+            case AVATAR:
+                if(!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) && !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE))
+                    throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg y .jpeg");
+                break;
+            case FILE:
+                if (!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) && !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE) && !Objects.equals(file.getContentType(), "video/mp4"))
+                    throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg y .jpeg");
+                break;
         }
     }
 
