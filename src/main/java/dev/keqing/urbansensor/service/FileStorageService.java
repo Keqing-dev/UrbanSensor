@@ -100,6 +100,7 @@ public class FileStorageService {
                         !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE) &&
                         !Objects.equals(file.getContentType(), "video/mp4") &&
                         !Objects.equals(file.getContentType(), "audio/aac") &&
+                        !Objects.equals(file.getContentType(), "audio/x-aac") &&
                         !Objects.equals(file.getContentType(), "audio/mpeg") &&
                         !Objects.equals(file.getContentType(), "audio/wav"))
                     throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg, .jpeg, .mp4, .aac, .mp3 y .wav");
