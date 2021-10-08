@@ -92,12 +92,17 @@ public class FileStorageService {
         System.out.println(file.getContentType());
         switch (type) {
             case AVATAR:
-                if(!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) && !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE))
+                if (!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) && !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE))
                     throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg y .jpeg");
                 break;
             case FILE:
-                if (!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) && !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE) && !Objects.equals(file.getContentType(), "video/mp4"))
-                    throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg y .jpeg");
+                if (!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) &&
+                        !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE) &&
+                        !Objects.equals(file.getContentType(), "video/mp4") &&
+                        !Objects.equals(file.getContentType(), "audio/aac") &&
+                        !Objects.equals(file.getContentType(), "audio/mpeg") &&
+                        !Objects.equals(file.getContentType(), "audio/wav"))
+                    throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg, .jpeg, .mp4, .aac, .mp3 y .wav");
                 break;
         }
     }
