@@ -9,6 +9,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -52,6 +54,8 @@ public class FileStorageService {
     }
 
     public String storeFile(MultipartFile file, FileType type, String oldFilename) throws CustomException {
+        checkMimeType(file, type);
+
         String filename = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
 
         try {
@@ -69,6 +73,8 @@ public class FileStorageService {
     }
 
     public String storeFile(MultipartFile file, FileType type) throws CustomException {
+        checkMimeType(file, type);
+
         String filename = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
 
         try {
@@ -82,14 +88,28 @@ public class FileStorageService {
         }
     }
 
+    private void checkMimeType(MultipartFile file, FileType type) throws CustomException {
+        System.out.println(file.getContentType());
+        switch (type) {
+            case AVATAR:
+                if(!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) && !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE))
+                    throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg y .jpeg");
+                break;
+            case FILE:
+                if (!Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_JPEG_VALUE) && !Objects.equals(file.getContentType(), MimeTypeUtils.IMAGE_PNG_VALUE) && !Objects.equals(file.getContentType(), "video/mp4"))
+                    throw new CustomException(HttpStatus.BAD_REQUEST, "Formato de archivo invalido. Solo se aceptan formatos .png, .jpg y .jpeg");
+                break;
+        }
+    }
 
-    public void deleteFile(String filename, FileType type) throws CustomException {
+
+    public void deleteFile(String filename, FileType type) {
         try {
             Path targetLocation = getTargetLocation(filename, type);
 
             Files.delete(targetLocation);
         } catch (IOException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
+//            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
