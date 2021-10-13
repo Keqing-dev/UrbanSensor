@@ -14,8 +14,8 @@ spring:
     multipart:
       enabled: true
       file-size-threshold: 2KB
-      max-file-size: 95MB
-      max-request-size: 100MB
+      max-file-size: 507MB
+      max-request-size: 512MB
   profiles:
     active: prod
 
