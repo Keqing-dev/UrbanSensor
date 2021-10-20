@@ -1,5 +1,6 @@
 package dev.keqing.urbansensor.controller;
 
+import dev.keqing.urbansensor.config.GeneralConfig;
 import dev.keqing.urbansensor.dao.ReportRepository;
 import dev.keqing.urbansensor.entity.Report;
 import dev.keqing.urbansensor.exception.CustomException;
@@ -32,6 +33,9 @@ public class CsvController {
     @Autowired
     private ReportRepository reportRepository;
 
+    @Autowired
+    private GeneralConfig generalConfig;
+
     @GetMapping("/reports")
     @Operation(summary = "Exportar mis reportes", description = "Genera un reporte con extension .csv delimitado por coma (,), con un tamaño por pagina de 1M, el limite por pagina se puede cambiar por parámetro.", security = @SecurityRequirement(name = "bearer"))
     public void reportsToCsv(HttpServletResponse response, @RequestParam String projectId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "1000000") int limit) throws IOException {
@@ -55,6 +59,7 @@ public class CsvController {
         csvWriter.writeHeader(csvHeader);
 
         for (Report report : reports.getContent()) {
+            report.setFile(generalConfig.getDomainName() + report.getFile());
             csvWriter.write(report, nameMapping);
         }
 
