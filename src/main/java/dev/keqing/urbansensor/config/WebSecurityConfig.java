@@ -29,6 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/user/avatar/**",
             "/docs/**",
             "/docs.html/**",
+            "/"
     };
 
     private final String[] POST_WHITELIST = {
