@@ -59,7 +59,7 @@ public class CsvController {
         csvWriter.writeHeader(csvHeader);
 
         for (Report report : reports.getContent()) {
-            report.setFile(generalConfig.getDomainName() + report.getFile());
+            report.setFile(generalConfig.getDomainName() + "uploads/file/" + report.getFile());
             csvWriter.write(report, nameMapping);
         }
 
@@ -84,6 +84,8 @@ public class CsvController {
         if (report.isEmpty()) {
             throw new CustomException(HttpStatus.NOT_FOUND);
         }
+        Report report1 = report.get();
+        report1.setFile(generalConfig.getDomainName() + "uploads/file/" + report1.getFile());
 
         String[] csvHeader = {"Report id", "Latitude", "Longitude", "Address", "Categories", "Observations", "Report File", "Project Id", "Project Name", "CreationAt"};
         String[] nameMapping = {"id", "latitude", "longitude", "address", "categories", "observations", "file", "projectId", "projectName", "timestamp"};
