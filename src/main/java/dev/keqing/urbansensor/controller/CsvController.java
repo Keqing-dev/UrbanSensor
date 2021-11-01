@@ -51,8 +51,8 @@ public class CsvController {
 
         Page<Report> reports = reportRepository.findAllByProject_IdOrderByTimestampDesc(projectId, pageable, Report.class);
 
-        String[] csvHeader = {"Report id", "Latitude", "Longitude", "Address", "Categories", "Observations", "Report File", "Project Id", "Project Name", "CreationAt"};
-        String[] nameMapping = {"id", "latitude", "longitude", "address", "categories", "observations", "file", "projectId", "projectName", "timestamp"};
+        String[] csvHeader = {"Report id", "Categories", "Address", "<img>-File", "Observations", "Latitude", "Longitude", "Project Id", "Project Name", "CreationAt"};
+        String[] nameMapping = {"id", "categories", "address", "file", "observations", "latitude", "longitude", "projectId", "projectName", "timestamp"};
 
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 
@@ -86,9 +86,8 @@ public class CsvController {
         }
         Report report1 = report.get();
         report1.setFile(generalConfig.getDomainName() + "uploads/file/" + report1.getFile());
-
-        String[] csvHeader = {"Report id", "Latitude", "Longitude", "Address", "Categories", "Observations", "Report File", "Project Id", "Project Name", "CreationAt"};
-        String[] nameMapping = {"id", "latitude", "longitude", "address", "categories", "observations", "file", "projectId", "projectName", "timestamp"};
+        String[] csvHeader = {"Report id", "Categories", "Address", "<img>-File", "Observations", "Latitude", "Longitude", "Project Id", "Project Name", "CreationAt"};
+        String[] nameMapping = {"id", "categories", "address", "file", "observations", "latitude", "longitude", "projectId", "projectName", "timestamp"};
 
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 
